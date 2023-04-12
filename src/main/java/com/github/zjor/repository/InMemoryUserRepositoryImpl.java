@@ -22,7 +22,15 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User create(int id, String username) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    @Override
     public Optional<User> findById(int id) {
         return Optional.ofNullable(storage.get(id));
     }
+
+
 }

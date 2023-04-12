@@ -60,8 +60,13 @@ public class FileUserRepositoryImpl implements UserRepository {
 
     @Override
     public User create(String username) {
+        return create(nextId(), username);
+    }
+
+    @Override
+    public User create(int id, String username) {
         User u = User.builder()
-                .id(nextId())
+                .id(id)
                 .username(username)
                 .build();
         usersCache.add(u);
@@ -81,5 +86,12 @@ public class FileUserRepositoryImpl implements UserRepository {
             }
         }
         return Optional.empty();
+    }
+
+    public List<User> findAll() {
+        if (isDirty) {
+            loadUsers();
+        }
+        return usersCache;
     }
 }
