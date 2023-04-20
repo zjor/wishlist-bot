@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.zjor.domain.User;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -13,7 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-// Singleton
+@Slf4j
 public class FileUserRepositoryImpl implements UserRepository {
 
     private final ObjectMapper mapper = new ObjectMapper();

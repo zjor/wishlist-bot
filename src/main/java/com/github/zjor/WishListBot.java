@@ -2,6 +2,7 @@ package com.github.zjor;
 
 import com.github.zjor.repository.UserRepository;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -12,6 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 
 import java.util.List;
 
+
+@Slf4j
 public class WishListBot extends TelegramLongPollingBot {
 
     private final UserRepository userRepository;
@@ -29,6 +32,7 @@ public class WishListBot extends TelegramLongPollingBot {
             long userId = message.getChatId();
             var text = message.getText();
 
+            log.info("Ensuring user exists: ID {}", userId);
             userRepository.ensure((int) userId, message.getChat().getUserName());
 
             if (text.startsWith("/start")) {

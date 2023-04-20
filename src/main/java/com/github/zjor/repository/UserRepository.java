@@ -13,6 +13,7 @@ public interface UserRepository {
     Optional<User> findById(int id);
 
     default User ensure(int id, String username) {
+
         Optional<User> found = findById(id);
         if (found.isPresent()) {
             return found.get();

@@ -1,0 +1,10 @@
+version: "3"
+services:
+  retvrn-db:
+    image: postgres:13.6-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: wishlist_bot
+      POSTGRES_USER: wishlist_bot
+      POSTGRES_PASSWORD: s3cr3t
