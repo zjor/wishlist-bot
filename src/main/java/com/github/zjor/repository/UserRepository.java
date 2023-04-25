@@ -2,24 +2,24 @@ package com.github.zjor.repository;
 
 import com.github.zjor.domain.User;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UserRepository {
 
-    User create(String username);
+    User create(String extId, String username, String firstName, String lastName);
 
-    User create(int id, String username);
+    Optional<User> findByExtId(String extId);
 
-    Optional<User> findById(int id);
+    default User ensure(String extId, String username, String firstName, String lastName) {
 
-    default User ensure(int id, String username) {
-
-        Optional<User> found = findById(id);
+        Optional<User> found = findByExtId(extId);
         if (found.isPresent()) {
             return found.get();
         } else {
-            return create(id, username);
+            return create(extId, username, firstName, lastName);
         }
     }
 
+    List<User> findAll();
 }

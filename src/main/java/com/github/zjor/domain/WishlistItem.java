@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +14,9 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class WishlistItem {
+
+    public record Price(BigDecimal price, String currency) {
+    }
 
     public enum Status {
         ACTIVE,
@@ -37,4 +41,6 @@ public class WishlistItem {
     private boolean isPublic;
     private Optional<WishlistItem> inspiredBy;
 
+
 }
+

@@ -1,36 +1,39 @@
 package com.github.zjor.repository;
 
 import com.github.zjor.domain.User;
+import com.github.zjor.util.IdGenerator;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public class InMemoryUserRepositoryImpl implements UserRepository {
 
-    private Map<Integer, User> storage = new HashMap<>();
-    private int idGenerator = 0;
+    private Map<String, User> storage = new HashMap<>();
 
     @Override
-    public synchronized User create(String username) {
+    public synchronized User create(String extId, String username, String firstName, String lastName) {
         User user = User.builder()
-                .id(idGenerator++)
+                .id(IdGenerator.nextId())
+                .extId(extId)
                 .username(username)
+                .firstName(firstName)
+                .lastName(lastName)
                 .build();
-        storage.put(user.getId(), user);
+        storage.put(extId, user);
         return user;
     }
 
-    @Override
-    public User create(int id, String username) {
-        throw new UnsupportedOperationException();
-    }
-
 
     @Override
-    public Optional<User> findById(int id) {
-        return Optional.ofNullable(storage.get(id));
+    public Optional<User> findByExtId(String extId) {
+        return Optional.ofNullable(storage.get(extId));
     }
 
+    @Override
+    public List<User> findAll() {
+        return storage.values().stream().toList();
+    }
 
 }

@@ -2,30 +2,29 @@
 
 ## Product definition
 
-Бот, который позволяет создавать списки желаний, делиться элементами списка, смотреть желания других людей.
+A Telegram bot which allows users to keep track of their wishlist and share it with others.
 
 ## Functional requirements
 
-- пользователь может создать элемент списка
-- может просматривать свой список
-- может редактировать элементы
-- может удалить
-- опубликовать эл-т
-- можно искать публичные желанию других
-- может искать по словам в описании
-- может искать по тегам
-- можно вдохновляться желаниями других 
-- добавить элемент можно отправкой ссылки на товар в бота
+- user has CRUD (create, update, delete) functionality for a wish list item
+- user can add tags to a wish list item
+- user can make a wish list item public
+- user can search for public wish list items of other users by their name, description or tags
+- user can add other's wish list items to their own wish list
+- user can like other's wish list items
+- user can add a wish list item to their own wish list by sending a list from an e-shop to the item, the contents of
+  which will be parsed and used to create a wish list item
 
----
+** Additional functionality **
 
-- можно резервировать чужие желания
-- можно скидываться на желание
-- можно лайкать чужие желания
-- можно просматривать top-liked элементы
-
+- user can "book" other's items for purchase as a gift
+- users can buy an item as a gift with a group of users, aka "social shopping"
+- user's can view top liked wish list items
 
 ## Technical requirements
 
 - Telegram Bot
-- Web Apps
+- Web Apps [TWA](https://core.telegram.org/bots/webapps)
+
+## References
+- [test bot](https://t.me/ruofeqnw_bot)

@@ -3,6 +3,7 @@ package com.github.zjor.repository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.zjor.domain.User;
+import com.github.zjor.util.IdGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,20 +28,6 @@ public class FileUserRepositoryImpl implements UserRepository {
         this.filename = filename;
     }
 
-    private int nextId() {
-        if (isDirty) {
-            loadUsers();
-        }
-
-        int maxId = -1;
-        for (User u: usersCache) {
-            if (u.getId() > maxId) {
-                maxId = u.getId();
-            }
-        }
-        return maxId + 1;
-    }
-
     @SneakyThrows
     private void loadUsers() {
         try (Reader reader = new FileReader(filename)) {
@@ -60,15 +47,13 @@ public class FileUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public User create(String username) {
-        return create(nextId(), username);
-    }
-
-    @Override
-    public User create(int id, String username) {
+    public User create(String extId, String username, String firstName, String lastName) {
         User u = User.builder()
-                .id(id)
+                .id(IdGenerator.nextId())
+                .extId(extId)
                 .username(username)
+                .firstName(firstName)
+                .lastName(lastName)
                 .build();
         usersCache.add(u);
         isDirty = true;
@@ -77,18 +62,19 @@ public class FileUserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public Optional<User> findById(int id) {
+    public Optional<User> findByExtId(String extId) {
         if (isDirty) {
             loadUsers();
         }
         for (User user : usersCache) {
-            if (user.getId() == id) {
+            if (extId.equals(user.getExtId())) {
                 return Optional.of(user);
             }
         }
         return Optional.empty();
     }
 
+    @Override
     public List<User> findAll() {
         if (isDirty) {
             loadUsers();

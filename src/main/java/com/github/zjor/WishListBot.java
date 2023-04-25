@@ -29,11 +29,12 @@ public class WishListBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Message message = update.getMessage();
+            var chat = message.getChat();
             long userId = message.getChatId();
             var text = message.getText();
 
             log.info("Ensuring user exists: ID {}", userId);
-            userRepository.ensure((int) userId, message.getChat().getUserName());
+            userRepository.ensure(String.valueOf(chat.getId()), chat.getUserName(), chat.getFirstName(), chat.getLastName());
 
             if (text.startsWith("/start")) {
                 handleStart(message);
