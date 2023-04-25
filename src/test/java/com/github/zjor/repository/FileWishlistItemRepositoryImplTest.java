@@ -2,6 +2,7 @@ package com.github.zjor.repository;
 
 
 import com.github.zjor.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -9,6 +10,7 @@ import org.springframework.util.Assert;
 import java.io.File;
 import java.util.List;
 
+@Slf4j
 public class FileWishlistItemRepositoryImplTest {
 
     private File wishlistItemsTempFile;
@@ -31,6 +33,7 @@ public class FileWishlistItemRepositoryImplTest {
     @Test
     public void shouldCreateAndFindWishlistItem() {
         var item = wishlistItemRepository.create(alice, "item1", "desc1", "url1", "image1", List.of("book"));
+        log.info("Created wishlist item ID: {}", item.getId());
         Assert.notNull(item.getId(), "id should be generated");
 
         var found = wishlistItemRepository.findByOwner(alice);

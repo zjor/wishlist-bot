@@ -13,8 +13,8 @@ public class IdGenerator {
 
     public static String nextId() {
         return hashids.encode(
-                System.currentTimeMillis(),
-                random.nextLong() % 9007199254740992L,
-                counter.incrementAndGet());
+                System.currentTimeMillis() +
+                        random.nextLong() % 1000L +
+                        counter.incrementAndGet());
     }
 }

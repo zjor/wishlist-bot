@@ -2,7 +2,9 @@ package com.github.zjor.config;
 
 import com.github.zjor.WishListBot;
 import com.github.zjor.repository.FileUserRepositoryImpl;
+import com.github.zjor.repository.FileWishlistItemRepositoryImpl;
 import com.github.zjor.repository.UserRepository;
+import com.github.zjor.repository.WishlistItemRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +17,16 @@ public class ApplicationConfiguration {
     }
 
     @Bean
+    public WishlistItemRepository wishlistItemRepository() {
+        return new FileWishlistItemRepositoryImpl("./storage/wishlistItems.json");
+    }
+
+    @Bean
     public WishListBot wishListBot(
             @Value("${telegram.botToken}") String token,
-            UserRepository userRepository) {
-        return new WishListBot(token, userRepository);
+            UserRepository userRepository,
+            WishlistItemRepository wishlistItemRepository) {
+        return new WishListBot(token, userRepository, wishlistItemRepository);
     }
 
 }
