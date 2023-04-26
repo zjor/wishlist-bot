@@ -1,19 +1,15 @@
-package com.github.zjor;
+package com.github.zjor.bot;
 
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -27,6 +23,11 @@ public class WishListBot extends TelegramLongPollingBot {
      * telegram ID -> is creating new item
      */
     private final Map<String, Boolean> userState = new HashMap<>();
+
+    /**
+     * telegram ID -> item creation state machine
+     */
+    private final Map<String, CreateWishlistItemStateMachine> userFsm = new HashMap<>();
 
     public WishListBot(
             String botToken,
@@ -43,7 +44,7 @@ public class WishListBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message message = update.getMessage();
             var chat = message.getChat();
-            long userId = message.getChatId();
+            String userId = String.valueOf(message.getChatId());
             var text = message.getText();
 
             log.info("Ensuring user exists: ID {}", userId);
@@ -52,16 +53,20 @@ public class WishListBot extends TelegramLongPollingBot {
             if (text.startsWith("/start")) {
                 handleStart(message);
             } else if (text.startsWith("/create")) {
-                userState.put(String.valueOf(userId), true);
-                reply(message, "Enter item name and description separated by comma");
-            } else if (userState.getOrDefault(String.valueOf(userId), false)) {
-                String[] parts = message.getText().split(",");
-                var item = wishlistItemRepository.create(user,
-                        parts[0],
-                        parts[1], null, null, null);
-                reply(message, "New item created. ID: " + item.getId());
-                userState.put(String.valueOf(userId), false);
-            } else if(text.startsWith("/list")) {
+                CreateWishlistItemStateMachine stateMachine = new CreateWishlistItemStateMachine();
+                userFsm.put(userId, stateMachine);
+                var result = stateMachine.start();
+                reply(message, result.replyText());
+            } else if (text.startsWith("/cancel")) {
+                var stateMachine = userFsm.get(userId);
+                if (stateMachine != null) {
+                    var result = stateMachine.cancel();
+                    userFsm.remove(userId);
+                    reply(message, result.replyText());
+                } else {
+                    reply(message, "There is nothing to cancel");
+                }
+            } else if (text.startsWith("/list")) {
                 var items = wishlistItemRepository.findByOwner(user);
                 var sb = new StringBuilder();
                 items.forEach(item ->
@@ -74,7 +79,24 @@ public class WishListBot extends TelegramLongPollingBot {
                 );
                 reply(message, sb.toString());
             } else {
-                handleOtherMessage(message);
+                var stateMachine = userFsm.get(userId);
+                if (stateMachine != null) {
+                    var result = stateMachine.text(text);
+                    if (result.state() == CreateWishlistItemStateMachine.State.DONE) {
+                        var item = stateMachine.getContext().build();
+                        wishlistItemRepository.create(
+                                user,
+                                item.getName(),
+                                item.getDescription(),
+                                item.getImageUrl(),
+                                item.getUrl(),
+                                item.getTags());
+                        userFsm.remove(userId);
+                    }
+                    reply(message, result.replyText());
+                } else {
+                    reply(message, "Say /create or /list");
+                }
             }
         }
     }
@@ -89,14 +111,6 @@ public class WishListBot extends TelegramLongPollingBot {
         reply(message, String.format("Hello %s!\nWelcome to the WishListBot", message.getChat().getFirstName()));
     }
 
-    @SneakyThrows
-    private void handleOtherMessage(Message message) {
-        var userId = message.getChatId();
-        SendMessage command = SendMessage.builder().chatId(userId).text("`" + message.getText() + "`").parseMode(ParseMode.MARKDOWN).replyMarkup(new InlineKeyboardMarkup(List.of(List.of(InlineKeyboardButton.builder().text("Click Me!").url("https://www.google.com").build()))
-
-        )).build();
-        execute(command);
-    }
 
     @Override
     public String getBotUsername() {

@@ -1,6 +1,6 @@
 package com.github.zjor.config;
 
-import com.github.zjor.WishListBot;
+import com.github.zjor.bot.WishListBot;
 import com.github.zjor.repository.FileUserRepositoryImpl;
 import com.github.zjor.repository.FileWishlistItemRepositoryImpl;
 import com.github.zjor.repository.UserRepository;
