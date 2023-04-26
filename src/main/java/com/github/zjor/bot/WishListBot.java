@@ -95,7 +95,7 @@ public class WishListBot extends TelegramLongPollingBot {
                     }
                     reply(message, result.replyText());
                 } else {
-                    reply(message, "Say /create or /list");
+                    reply(message, "Say `/create` or `/list`");
                 }
             }
         }

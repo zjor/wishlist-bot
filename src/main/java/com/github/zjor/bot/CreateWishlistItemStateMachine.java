@@ -72,12 +72,12 @@ public class CreateWishlistItemStateMachine {
                     case PENDING_URL -> {
                         context.url(text);
                         state = State.PENDING_TAGS;
-                        replyText = "Enter tags separated by comma (,), e.g. 'book, hobby'";
+                        replyText = "Enter tags separated by comma (,), e.g. `book, hobby`";
                     }
                     case PENDING_TAGS -> {
                         context.tags(ListUtils.parse(text));
                         state = State.DONE;
-                        replyText = "All done! Thanks!";
+                        replyText = "All done! Thanks! Now type `/list` command";
                     }
                     case DONE -> replyText = "There is nothing more to add.";
                 }

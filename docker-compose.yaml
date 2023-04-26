@@ -1,6 +1,6 @@
 version: "3"
 services:
-  retvrn-db:
+  database:
     image: postgres:13.6-alpine
     ports:
       - "5432:5432"
