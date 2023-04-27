@@ -1,3 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/wishlist_bot
+    username: wishlist_bot
+    password: s3cr3t
+
+  jpa:
+    properties.hibernate.dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+      format_sql: true
+    show-sql: true
+
+
 telegram:
   botUsername:
   botToken:

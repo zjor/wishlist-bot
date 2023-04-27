@@ -30,3 +30,4 @@ A Telegram bot which allows users to keep track of their wishlist and share it w
 
 - [Deployment](ops/README.md) 
 - [test bot](https://t.me/ruofeqnw_bot)
+- [production bot](https://t.me/wisshlist_bot)

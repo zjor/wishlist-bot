@@ -1,5 +1,6 @@
 package com.github.zjor.bot;
 
+import com.github.zjor.repository.JPAUserRepository;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
@@ -19,10 +20,8 @@ public class WishListBot extends TelegramLongPollingBot {
     private final UserRepository userRepository;
     private final WishlistItemRepository wishlistItemRepository;
 
-    /**
-     * telegram ID -> is creating new item
-     */
-    private final Map<String, Boolean> userState = new HashMap<>();
+    private final JPAUserRepository jpaUserRepository;
+
 
     /**
      * telegram ID -> item creation state machine
@@ -32,10 +31,12 @@ public class WishListBot extends TelegramLongPollingBot {
     public WishListBot(
             String botToken,
             UserRepository userRepository,
-            WishlistItemRepository wishlistItemRepository) {
+            WishlistItemRepository wishlistItemRepository,
+            JPAUserRepository jpaUserRepository) {
         super(botToken);
         this.userRepository = userRepository;
         this.wishlistItemRepository = wishlistItemRepository;
+        this.jpaUserRepository = jpaUserRepository;
     }
 
     @SneakyThrows
@@ -49,6 +50,7 @@ public class WishListBot extends TelegramLongPollingBot {
 
             log.info("Ensuring user exists: ID {}", userId);
             var user = userRepository.ensure(String.valueOf(chat.getId()), chat.getUserName(), chat.getFirstName(), chat.getLastName());
+            jpaUserRepository.save(user);
 
             if (text.startsWith("/start")) {
                 handleStart(message);
