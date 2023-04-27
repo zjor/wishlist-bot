@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.app }}
+  name: {{ .Values.app }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Values.app }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.app }}
+    spec:
+      restartPolicy: Always
+      containers:
+        - image: "{{ .Values.image }}:{{ .Values.version }}"
+          imagePullPolicy: Always
+          name: {{ .Values.app }}
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TELEGRAM_BOTUSERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: TELEGRAM_BOTUSERNAME
+                  optional: false
+            - name: TELEGRAM_BOTTOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: TELEGRAM_BOTTOKEN
+                  optional: false
+            - name: TELEGRAM_CREATORID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: TELEGRAM_CREATORID
+                  optional: false
+            - name: VCS_REF
+              value: {{ .Values.version }}
+          livenessProbe:
+            # failureThreshold: 10
+            initialDelaySeconds: 90
+            periodSeconds: 15
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP
+          readinessProbe:
+            # failureThreshold: 10
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            failureThreshold: 12
+            httpGet:
+              path: /actuator/health
+              port: 8080
+              scheme: HTTP

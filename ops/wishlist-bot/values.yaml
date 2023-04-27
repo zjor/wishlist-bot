@@ -1,0 +1,6 @@
+replicaCount: 1
+
+app: wishlist-bot
+image: zjor/wishlist-bot
+version:
+

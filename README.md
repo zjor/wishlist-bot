@@ -27,4 +27,6 @@ A Telegram bot which allows users to keep track of their wishlist and share it w
 - Web Apps [TWA](https://core.telegram.org/bots/webapps)
 
 ## References
+
+- [Deployment](ops/README.md) 
 - [test bot](https://t.me/ruofeqnw_bot)

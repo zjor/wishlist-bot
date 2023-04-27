@@ -7,4 +7,7 @@ target
 storage
 .tmp.json
 
+.env
+.env.local
+
 Sandbox.java

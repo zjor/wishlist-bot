@@ -77,6 +77,9 @@ public class WishListBot extends TelegramLongPollingBot {
                                 .append(item.getDescription())
                                 .append("\n")
                 );
+                if (sb.isEmpty()) {
+                    sb.append("No items yet, please type `/create` to add");
+                }
                 reply(message, sb.toString());
             } else {
                 var stateMachine = userFsm.get(userId);
