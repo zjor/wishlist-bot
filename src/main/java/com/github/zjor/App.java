@@ -1,7 +1,7 @@
 package com.github.zjor;
 
 import com.github.zjor.bot.WishListBot;
-import com.github.zjor.repository.JPAUserRepository;
+import com.github.zjor.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -19,7 +19,7 @@ public class App {
         WishListBot bot = context.getBean(WishListBot.class);
         botsApi.registerBot(bot);
 
-        var userRepo = context.getBean(JPAUserRepository.class);
+        var userRepo = context.getBean(UserRepository.class);
         userRepo.findAll().forEach(u -> {
             System.out.println(u);
         });

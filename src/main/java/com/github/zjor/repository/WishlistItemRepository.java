@@ -2,17 +2,19 @@ package com.github.zjor.repository;
 
 import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
+import jakarta.transaction.Transactional;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
-public interface WishlistItemRepository {
+@Repository
+@Transactional
+public interface WishlistItemRepository extends CrudRepository<WishlistItem, String> {
 
-    WishlistItem create(User owner, String name, String description, String imageUrl, String url, List<String> tags);
+    List<WishlistItem> findWishlistItemByOwnerOrderByCreatedAtDesc(User user);
 
-    List<WishlistItem> findByOwner(User owner);
-    List<WishlistItem> findByOwnerAndTags(User owner, Set<String> tags);
-
-    Optional<WishlistItem> get(String id);
+    default List<WishlistItem> findByOwner(User user) {
+        return findWishlistItemByOwnerOrderByCreatedAtDesc(user);
+    }
 }

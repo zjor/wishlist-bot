@@ -1,25 +1,30 @@
 package com.github.zjor.repository;
 
 import com.github.zjor.domain.User;
+import jakarta.transaction.Transactional;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface UserRepository {
+@Repository
+@Transactional
+public interface UserRepository extends CrudRepository<User, String> {
 
-    User create(String extId, String username, String firstName, String lastName);
-
-    Optional<User> findByExtId(String extId);
+    Optional<User> findUserByExtId(String extId);
 
     default User ensure(String extId, String username, String firstName, String lastName) {
-
-        Optional<User> found = findByExtId(extId);
-        if (found.isPresent()) {
-            return found.get();
+        var existing = findUserByExtId(extId);
+        if (existing.isPresent()) {
+            return existing.get();
         } else {
-            return create(extId, username, firstName, lastName);
+            var created = save(User.builder()
+                    .extId(extId)
+                    .username(username)
+                    .firstName(firstName)
+                    .lastName(lastName)
+                    .build());
+            return created;
         }
     }
-
-    List<User> findAll();
 }

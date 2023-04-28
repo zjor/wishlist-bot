@@ -1,6 +1,5 @@
 package com.github.zjor.bot;
 
-import com.github.zjor.repository.JPAUserRepository;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
@@ -20,9 +19,6 @@ public class WishListBot extends TelegramLongPollingBot {
     private final UserRepository userRepository;
     private final WishlistItemRepository wishlistItemRepository;
 
-    private final JPAUserRepository jpaUserRepository;
-
-
     /**
      * telegram ID -> item creation state machine
      */
@@ -31,12 +27,10 @@ public class WishListBot extends TelegramLongPollingBot {
     public WishListBot(
             String botToken,
             UserRepository userRepository,
-            WishlistItemRepository wishlistItemRepository,
-            JPAUserRepository jpaUserRepository) {
+            WishlistItemRepository wishlistItemRepository) {
         super(botToken);
         this.userRepository = userRepository;
         this.wishlistItemRepository = wishlistItemRepository;
-        this.jpaUserRepository = jpaUserRepository;
     }
 
     @SneakyThrows
@@ -50,7 +44,6 @@ public class WishListBot extends TelegramLongPollingBot {
 
             log.info("Ensuring user exists: ID {}", userId);
             var user = userRepository.ensure(String.valueOf(chat.getId()), chat.getUserName(), chat.getFirstName(), chat.getLastName());
-            jpaUserRepository.save(user);
 
             if (text.startsWith("/start")) {
                 handleStart(message);
@@ -88,14 +81,10 @@ public class WishListBot extends TelegramLongPollingBot {
                 if (stateMachine != null) {
                     var result = stateMachine.text(text);
                     if (result.state() == CreateWishlistItemStateMachine.State.DONE) {
-                        var item = stateMachine.getContext().build();
-                        wishlistItemRepository.create(
-                                user,
-                                item.getName(),
-                                item.getDescription(),
-                                item.getImageUrl(),
-                                item.getUrl(),
-                                item.getTags());
+                        var item = stateMachine.getContext()
+                                .owner(user)
+                                .build();
+                        wishlistItemRepository.save(item);
                         userFsm.remove(userId);
                     }
                     reply(message, result.replyText());
