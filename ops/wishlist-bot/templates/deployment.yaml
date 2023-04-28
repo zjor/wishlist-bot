@@ -22,6 +22,24 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: SPRING_DATASOURCE_URL
+                  optional: false
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+                  optional: false
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
+                  optional: false
             - name: TELEGRAM_BOTUSERNAME
               valueFrom:
                 secretKeyRef:
