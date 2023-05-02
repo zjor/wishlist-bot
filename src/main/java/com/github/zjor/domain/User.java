@@ -22,7 +22,7 @@ public class User extends Born {
     @Column(name = "ext_id", unique = true, nullable = false)
     private String extId;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "first_name")
