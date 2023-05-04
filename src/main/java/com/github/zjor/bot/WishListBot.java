@@ -8,8 +8,12 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -75,7 +79,20 @@ public class WishListBot extends TelegramLongPollingBot {
                 if (sb.isEmpty()) {
                     sb.append("No items yet, please type `/create` to add");
                 }
-                reply(message, sb.toString());
+                execute(SendMessage.builder()
+                        .chatId(message.getChatId())
+                        .text(sb.toString())
+                        .replyMarkup(InlineKeyboardMarkup.builder()
+                                .keyboardRow(List.of(
+                                        InlineKeyboardButton.builder()
+                                                .text("Open the app")
+                                                .webApp(WebAppInfo.builder()
+                                                        .url("https://twa-wishlist-bot.surge.sh")
+                                                        .build())
+                                                .build()
+                                ))
+                                .build())
+                        .build());
             } else {
                 var stateMachine = userFsm.get(userId);
                 if (stateMachine != null) {

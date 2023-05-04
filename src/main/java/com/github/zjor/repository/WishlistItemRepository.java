@@ -14,6 +14,8 @@ public interface WishlistItemRepository extends CrudRepository<WishlistItem, Str
 
     List<WishlistItem> findWishlistItemByOwnerOrderByCreatedAtDesc(User user);
 
+    List<WishlistItem> findWishlistItemByIsPublicOrderByCreatedAtDesc(boolean isPublic);
+
     default List<WishlistItem> findByOwner(User user) {
         return findWishlistItemByOwnerOrderByCreatedAtDesc(user);
     }
