@@ -10,7 +10,7 @@ A language-agnostic tool [golang-migrate](https://github.com/golang-migrate/migr
 1. Create a new migration
 
 ```bash
-$> migrate create -ext sql -dir db/migrations -seq <migration_name>
+migrate create -ext sql -dir db/migrations -seq <migration_name>
 ```
 
 2. Apply migration

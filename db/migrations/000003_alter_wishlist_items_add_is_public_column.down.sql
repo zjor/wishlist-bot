@@ -1,0 +1,1 @@
+ALTER TABLE wishlist_items DROP COLUMN "is_public";
