@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wishlist Bot</title>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        .name {
+            font-weight: bold;
+        }
+
+        .author {
+            font-style: italic;
+        }
+
+        .description {
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Public items</h1>
+<div>
+    <ul id="items"></ul>
+</div>
+
+
+<script>
+    async function main() {
+        const items = await fetch('https://https://bot.wishlist.projects.royz.cc/api/wishlist/public')
+        const json = await items.json()
+
+        console.log(json)
+
+        const itemsList = document.getElementById('items')
+        json.forEach(item => {
+            const li = document.createElement('li')
+            li.innerHTML = `
+<div><span class="name">${item.name}</span> <span class="author">by ${item.owner.firstName}</span></div>
+<div class="description">${item.description}</div>
+`
+            itemsList.appendChild(li)
+        })
+    }
+
+    main().catch(console.error)
+</script>
+
+</body>
+</html>
