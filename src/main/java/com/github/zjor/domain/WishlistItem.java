@@ -39,6 +39,9 @@ public class WishlistItem extends Born {
     @Column(name = "url")
     private String url;
 
+    @Column(name = "is_public", columnDefinition = "default false", nullable = false)
+    private boolean isPublic;
+
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
     private List<String> tags = new ArrayList<>();
