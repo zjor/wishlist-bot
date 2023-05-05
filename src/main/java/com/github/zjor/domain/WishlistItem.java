@@ -30,13 +30,13 @@ public class WishlistItem extends Born {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 4096)
     private String description;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", length = 1024)
     private String imageUrl;
 
-    @Column(name = "url")
+    @Column(name = "url", length = 1024)
     private String url;
 
     @Column(name = "is_public", columnDefinition = "default false", nullable = false)
