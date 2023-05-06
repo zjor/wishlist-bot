@@ -48,8 +48,9 @@ public class CreateWishlistItemCommand extends BotCommand {
     @Getter
     private WishlistItem.WishlistItemBuilder context = WishlistItem.builder();
 
-    public void start() {
+    public BotCommand start() {
         transition(new StartAction());
+        return this;
     }
 
     public void cancel() {

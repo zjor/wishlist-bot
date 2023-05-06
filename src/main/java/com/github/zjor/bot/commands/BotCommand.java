@@ -6,21 +6,27 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 public abstract class BotCommand {
 
-    private final DefaultAbsSender sender;
-    private final Long chatId;
+    protected final DefaultAbsSender sender;
+    protected final Long chatId;
 
     public BotCommand(DefaultAbsSender sender, Long chatId) {
         this.sender = sender;
         this.chatId = chatId;
     }
 
-    abstract public void start();
+    abstract public BotCommand start();
 
-    abstract public void cancel();
+    public void cancel() {
+        throw new UnsupportedOperationException();
+    }
 
-    abstract public void text(String text);
+    public void text(String text) {
+        throw new UnsupportedOperationException();
+    }
 
-    abstract public boolean isFinished();
+    public boolean isFinished() {
+        return true;
+    }
 
     @SneakyThrows
     protected void reply(String text) {

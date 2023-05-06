@@ -2,6 +2,7 @@ package com.github.zjor.bot;
 
 import com.github.zjor.bot.commands.BotCommand;
 import com.github.zjor.bot.commands.CreateWishlistItemCommand;
+import com.github.zjor.bot.commands.ListItemsCommand;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
@@ -10,12 +11,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -60,9 +57,10 @@ public class WishListBot extends TelegramLongPollingBot {
             if (text.startsWith("/start")) {
                 handleStart(message);
             } else if (text.startsWith("/create")) {
-                CreateWishlistItemCommand createItemCommand = new CreateWishlistItemCommand(this, message.getChatId(), user, wishlistItemRepository);
-                currentCommands.put(userId, createItemCommand);
-                createItemCommand.start();
+                currentCommands.put(
+                        userId,
+                        new CreateWishlistItemCommand(this, message.getChatId(), user, wishlistItemRepository)
+                                .start());
             } else if (text.startsWith("/cancel")) {
                 if (command != null) {
                     command.cancel();
@@ -70,33 +68,7 @@ public class WishListBot extends TelegramLongPollingBot {
                     reply(message, "There is nothing to cancel");
                 }
             } else if (text.startsWith("/list")) {
-                var items = wishlistItemRepository.findByOwner(user);
-                var sb = new StringBuilder();
-                items.forEach(item ->
-                        sb.append(item.getId())
-                                .append(" - ")
-                                .append(item.getName())
-                                .append(" - ")
-                                .append(item.getDescription())
-                                .append("\n")
-                );
-                if (sb.isEmpty()) {
-                    sb.append("No items yet, please type `/create` to add");
-                }
-                execute(SendMessage.builder()
-                        .chatId(message.getChatId())
-                        .text(sb.toString())
-                        .replyMarkup(InlineKeyboardMarkup.builder()
-                                .keyboardRow(List.of(
-                                        InlineKeyboardButton.builder()
-                                                .text("Open the app")
-                                                .webApp(WebAppInfo.builder()
-                                                        .url("https://twa-wishlist-bot.surge.sh")
-                                                        .build())
-                                                .build()
-                                ))
-                                .build())
-                        .build());
+                new ListItemsCommand(this, message.getChatId(), user, wishlistItemRepository).start();
             } else {
                 if (command != null) {
                     command.text(text);
