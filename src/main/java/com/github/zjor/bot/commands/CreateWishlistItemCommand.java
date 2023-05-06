@@ -1,51 +1,74 @@
-package com.github.zjor.bot;
+package com.github.zjor.bot.commands;
 
+import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
+import com.github.zjor.repository.WishlistItemRepository;
 import com.github.zjor.util.ListUtils;
 import lombok.Getter;
+import org.telegram.telegrambots.bots.DefaultAbsSender;
 
-public class CreateWishlistItemStateMachine {
-
-    public enum State {
-        STARTED,
-        PENDING_NAME,
-        PENDING_DESCRIPTION,
-        PENDING_URL,
-        PENDING_TAGS,
-        DONE(true),
-        CANCELLED(true);
-
-        @Getter
-        private final boolean isFinal;
-
-        State() {
-            this.isFinal = false;
-        }
-
-        State(boolean isFinal) {
-            this.isFinal = isFinal;
-        }
-    }
+enum State {
+    STARTED,
+    PENDING_NAME,
+    PENDING_DESCRIPTION,
+    PENDING_URL,
+    PENDING_TAGS,
+    DONE(true),
+    CANCELLED(true);
 
     @Getter
+    final boolean isFinal;
+
+    State() {
+        this.isFinal = false;
+    }
+
+    State(boolean isFinal) {
+        this.isFinal = isFinal;
+    }
+}
+
+public class CreateWishlistItemCommand extends BotCommand {
+
+    private final User user;
+    private final WishlistItemRepository wishlistItemRepository;
+
+    public CreateWishlistItemCommand(
+            DefaultAbsSender sender,
+            Long chatId,
+            User user,
+            WishlistItemRepository wishlistItemRepository) {
+        super(sender, chatId);
+        this.user = user;
+        this.wishlistItemRepository = wishlistItemRepository;
+    }
+
     private State state = State.STARTED;
 
     @Getter
     private WishlistItem.WishlistItemBuilder context = WishlistItem.builder();
 
-    public TransitionResult start() {
-        return transition(new StartAction());
+    public void start() {
+        transition(new StartAction());
     }
 
-    public TransitionResult cancel() {
-        return transition(new CancelAction());
+    public void cancel() {
+        transition(new CancelAction());
     }
 
-    public TransitionResult text(String text) {
-        return transition(new TextAction(text));
+    public void text(String text) {
+        transition(new TextAction(text));
+        if (state == State.DONE) {
+            wishlistItemRepository.save(getContext().owner(user).build());
+        }
     }
 
-    public TransitionResult transition(Action action) {
+    @Override
+    public boolean isFinished() {
+        return state.isFinal;
+    }
+
+    public void transition(Action action) {
         String replyText = null;
         switch (action) {
             case StartAction ignored -> {
@@ -84,7 +107,9 @@ public class CreateWishlistItemStateMachine {
             }
             default -> throw new IllegalStateException("Unexpected value: " + action);
         }
-        return new TransitionResult(state, replyText);
+        if (replyText != null) {
+            reply(replyText);
+        }
     }
 
     public interface Action {
@@ -97,10 +122,6 @@ public class CreateWishlistItemStateMachine {
     }
 
     public static class CancelAction implements Action {
-    }
-
-    public record TransitionResult(State state, String replyText) {
-
     }
 
 }

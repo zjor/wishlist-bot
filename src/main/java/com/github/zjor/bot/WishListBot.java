@@ -1,5 +1,7 @@
 package com.github.zjor.bot;
 
+import com.github.zjor.bot.commands.BotCommand;
+import com.github.zjor.bot.commands.CreateWishlistItemCommand;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
@@ -24,9 +26,9 @@ public class WishListBot extends TelegramLongPollingBot {
     private final WishlistItemRepository wishlistItemRepository;
 
     /**
-     * telegram ID -> item creation state machine
+     * telegram ID -> current user's command
      */
-    private final Map<String, CreateWishlistItemStateMachine> userFsm = new HashMap<>();
+    private final Map<String, BotCommand> currentCommands = new HashMap<>();
 
     public WishListBot(
             String botToken,
@@ -46,22 +48,24 @@ public class WishListBot extends TelegramLongPollingBot {
             String userId = String.valueOf(message.getChatId());
             var text = message.getText();
 
+            var command = currentCommands.get(userId);
+            if (command != null && command.isFinished()) {
+                currentCommands.remove(userId);
+                command = null;
+            }
+
             log.info("Ensuring user exists: ID {}", userId);
             var user = userRepository.ensure(String.valueOf(chat.getId()), chat.getUserName(), chat.getFirstName(), chat.getLastName());
 
             if (text.startsWith("/start")) {
                 handleStart(message);
             } else if (text.startsWith("/create")) {
-                CreateWishlistItemStateMachine stateMachine = new CreateWishlistItemStateMachine();
-                userFsm.put(userId, stateMachine);
-                var result = stateMachine.start();
-                reply(message, result.replyText());
+                CreateWishlistItemCommand createItemCommand = new CreateWishlistItemCommand(this, message.getChatId(), user, wishlistItemRepository);
+                currentCommands.put(userId, createItemCommand);
+                createItemCommand.start();
             } else if (text.startsWith("/cancel")) {
-                var stateMachine = userFsm.get(userId);
-                if (stateMachine != null) {
-                    var result = stateMachine.cancel();
-                    userFsm.remove(userId);
-                    reply(message, result.replyText());
+                if (command != null) {
+                    command.cancel();
                 } else {
                     reply(message, "There is nothing to cancel");
                 }
@@ -94,17 +98,8 @@ public class WishListBot extends TelegramLongPollingBot {
                                 .build())
                         .build());
             } else {
-                var stateMachine = userFsm.get(userId);
-                if (stateMachine != null) {
-                    var result = stateMachine.text(text);
-                    if (result.state() == CreateWishlistItemStateMachine.State.DONE) {
-                        var item = stateMachine.getContext()
-                                .owner(user)
-                                .build();
-                        wishlistItemRepository.save(item);
-                        userFsm.remove(userId);
-                    }
-                    reply(message, result.replyText());
+                if (command != null) {
+                    command.text(text);
                 } else {
                     reply(message, "Say `/create` or `/list`");
                 }
