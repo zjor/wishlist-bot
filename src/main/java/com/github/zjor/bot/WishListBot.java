@@ -1,5 +1,9 @@
 package com.github.zjor.bot;
 
+import com.github.zjor.bot.commands.BotCommand;
+import com.github.zjor.bot.commands.CreateWishlistItemCommand;
+import com.github.zjor.bot.commands.ListItemsCommand;
+import com.github.zjor.bot.commands.ViewItemCommand;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
@@ -8,12 +12,8 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import org.telegram.telegrambots.meta.api.objects.webapp.WebAppInfo;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -24,9 +24,9 @@ public class WishListBot extends TelegramLongPollingBot {
     private final WishlistItemRepository wishlistItemRepository;
 
     /**
-     * telegram ID -> item creation state machine
+     * telegram ID -> current user's command
      */
-    private final Map<String, CreateWishlistItemStateMachine> userFsm = new HashMap<>();
+    private final Map<String, BotCommand> currentCommands = new HashMap<>();
 
     public WishListBot(
             String botToken,
@@ -43,68 +43,42 @@ public class WishListBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message message = update.getMessage();
             var chat = message.getChat();
+            var chatId = message.getChatId();
             String userId = String.valueOf(message.getChatId());
             var text = message.getText();
 
+            var command = currentCommands.get(userId);
+            if (command != null && command.isFinished()) {
+                currentCommands.remove(userId);
+                command = null;
+            }
+
             log.info("Ensuring user exists: ID {}", userId);
-            var user = userRepository.ensure(String.valueOf(chat.getId()), chat.getUserName(), chat.getFirstName(), chat.getLastName());
+            var user = userRepository.ensure(String.valueOf(chatId), chat.getUserName(), chat.getFirstName(), chat.getLastName());
 
             if (text.startsWith("/start")) {
                 handleStart(message);
             } else if (text.startsWith("/create")) {
-                CreateWishlistItemStateMachine stateMachine = new CreateWishlistItemStateMachine();
-                userFsm.put(userId, stateMachine);
-                var result = stateMachine.start();
-                reply(message, result.replyText());
+                currentCommands.put(
+                        userId,
+                        new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository)
+                                .start());
             } else if (text.startsWith("/cancel")) {
-                var stateMachine = userFsm.get(userId);
-                if (stateMachine != null) {
-                    var result = stateMachine.cancel();
-                    userFsm.remove(userId);
-                    reply(message, result.replyText());
+                if (command != null) {
+                    command.cancel();
                 } else {
                     reply(message, "There is nothing to cancel");
                 }
             } else if (text.startsWith("/list")) {
-                var items = wishlistItemRepository.findByOwner(user);
-                var sb = new StringBuilder();
-                items.forEach(item ->
-                        sb.append(item.getId())
-                                .append(" - ")
-                                .append(item.getName())
-                                .append(" - ")
-                                .append(item.getDescription())
-                                .append("\n")
-                );
-                if (sb.isEmpty()) {
-                    sb.append("No items yet, please type `/create` to add");
-                }
-                execute(SendMessage.builder()
-                        .chatId(message.getChatId())
-                        .text(sb.toString())
-                        .replyMarkup(InlineKeyboardMarkup.builder()
-                                .keyboardRow(List.of(
-                                        InlineKeyboardButton.builder()
-                                                .text("Open the app")
-                                                .webApp(WebAppInfo.builder()
-                                                        .url("https://twa-wishlist-bot.surge.sh")
-                                                        .build())
-                                                .build()
-                                ))
-                                .build())
-                        .build());
+                new ListItemsCommand(this, chatId, user, wishlistItemRepository).start();
+            } else if (text.startsWith("/view")) {
+                currentCommands.put(
+                        userId,
+                        new ViewItemCommand(this, chatId, text, user, wishlistItemRepository)
+                                .start());
             } else {
-                var stateMachine = userFsm.get(userId);
-                if (stateMachine != null) {
-                    var result = stateMachine.text(text);
-                    if (result.state() == CreateWishlistItemStateMachine.State.DONE) {
-                        var item = stateMachine.getContext()
-                                .owner(user)
-                                .build();
-                        wishlistItemRepository.save(item);
-                        userFsm.remove(userId);
-                    }
-                    reply(message, result.replyText());
+                if (command != null) {
+                    command.text(text);
                 } else {
                     reply(message, "Say `/create` or `/list`");
                 }
