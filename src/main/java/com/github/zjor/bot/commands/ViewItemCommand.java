@@ -74,9 +74,9 @@ public class ViewItemCommand extends BotCommand {
             var item = itemOpt.get();
 
             var sb = new StringBuilder()
-                    .append('*').append(item.getName()).append('*').append('\n')
-                    .append("```").append(item.getDescription()).append("```\n")
-                    .append(item.getTags().stream().collect(Collectors.joining(", ")))
+                    .append('*').append(item.getName()).append('*').append("\n\n")
+                    .append("```\n").append(item.getDescription()).append("\n```\n")
+                    .append(item.getTags().stream().map(it -> '#' + it).collect(Collectors.joining(", ")))
                     .append('\n');
 
             sender.execute(SendMessage.builder()
