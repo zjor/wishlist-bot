@@ -3,6 +3,7 @@ package com.github.zjor.bot;
 import com.github.zjor.bot.commands.BotCommand;
 import com.github.zjor.bot.commands.CreateWishlistItemCommand;
 import com.github.zjor.bot.commands.ListItemsCommand;
+import com.github.zjor.bot.commands.ViewItemCommand;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
@@ -42,6 +43,7 @@ public class WishListBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message message = update.getMessage();
             var chat = message.getChat();
+            var chatId = message.getChatId();
             String userId = String.valueOf(message.getChatId());
             var text = message.getText();
 
@@ -52,14 +54,14 @@ public class WishListBot extends TelegramLongPollingBot {
             }
 
             log.info("Ensuring user exists: ID {}", userId);
-            var user = userRepository.ensure(String.valueOf(chat.getId()), chat.getUserName(), chat.getFirstName(), chat.getLastName());
+            var user = userRepository.ensure(String.valueOf(chatId), chat.getUserName(), chat.getFirstName(), chat.getLastName());
 
             if (text.startsWith("/start")) {
                 handleStart(message);
             } else if (text.startsWith("/create")) {
                 currentCommands.put(
                         userId,
-                        new CreateWishlistItemCommand(this, message.getChatId(), user, wishlistItemRepository)
+                        new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository)
                                 .start());
             } else if (text.startsWith("/cancel")) {
                 if (command != null) {
@@ -68,7 +70,12 @@ public class WishListBot extends TelegramLongPollingBot {
                     reply(message, "There is nothing to cancel");
                 }
             } else if (text.startsWith("/list")) {
-                new ListItemsCommand(this, message.getChatId(), user, wishlistItemRepository).start();
+                new ListItemsCommand(this, chatId, user, wishlistItemRepository).start();
+            } else if (text.startsWith("/view")) {
+                currentCommands.put(
+                        userId,
+                        new ViewItemCommand(this, chatId, text, user, wishlistItemRepository)
+                                .start());
             } else {
                 if (command != null) {
                     command.text(text);
