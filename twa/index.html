@@ -6,49 +6,39 @@
 </head>
 <body>
 <header>Wishlist</header>
-<div class="container">
-
-    <div class="item">
-        <div class="image">
-            <img src="/images/preview.png" alt="preview"/>
-        </div>
-        <div class="data">
-            <div class="name">A book</div>
-            <div class="description">Lorem ipsum</div>
-            <div class="tags">
-                <span>#book</span>
-                <span>#hobby</span>
-            </div>
-        </div>
-        <div class="link">
-            <a href="#">
-                <img src="/images/link.png" alt="link"/>
-            </a>
-        </div>
-    </div>
-
+<div id="items" class="container">
 </div>
-
-<div>
-    <ul id="items"></ul>
-</div>
-
-
 <script>
     async function main() {
-        const items = await fetch('https://bot.wishlist.projects.royz.cc/api/wishlist/public')
+        const url = 'https://bot.wishlist.projects.royz.cc/api/wishlist/public'
+        const items = await fetch(url)
         const json = await items.json()
 
         console.log(json)
 
         const itemsList = document.getElementById('items')
         json.forEach(item => {
-            const li = document.createElement('li')
-            li.innerHTML = `
-<div><span class="name">${item.name}</span> <span class="author">by ${item.owner.firstName}</span></div>
-<div class="description">${item.description}</div>
+
+            const tagsList = item.tags.map(value => `<span>#${value}</span>`).join()
+
+            const itemElement = document.createElement('div')
+            itemElement.className = "item"
+            itemElement.innerHTML = `
+        <div class="image">
+            <img src="/images/preview.png" alt="preview"/>
+        </div>
+        <div class="data">
+            <div class="name">${item.name}</div>
+            <div class="description">${item.description.substring(0, 128)}</div>
+            <div class="tags">${tagsList}</div>
+        </div>
+        <div class="link">
+            <a href="${item.url}">
+                <img src="/images/link.png" alt="link"/>
+            </a>
+        </div>
 `
-            itemsList.appendChild(li)
+            itemsList.appendChild(itemElement)
         })
     }
 

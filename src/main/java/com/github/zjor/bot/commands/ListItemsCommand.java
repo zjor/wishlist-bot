@@ -41,6 +41,8 @@ public class ListItemsCommand extends BotCommand {
         if (sb.isEmpty()) {
             sb.append("No items yet, please type `/create` to add");
         }
+//        var webAppUrl = "https://fbad-2a00-1028-838c-1796-c810-306d-54b1-79fd.ngrok-free.app/";
+        var webAppUrl = "https://twa-wishlist-bot.surge.sh";
         sender.execute(SendMessage.builder()
                 .chatId(chatId)
                 .text(sb.append('\n').toString())
@@ -50,7 +52,7 @@ public class ListItemsCommand extends BotCommand {
                                 InlineKeyboardButton.builder()
                                         .text("Open the app")
                                         .webApp(WebAppInfo.builder()
-                                                .url("https://twa-wishlist-bot.surge.sh")
+                                                .url(webAppUrl)
                                                 .build())
                                         .build()
                         ))

@@ -7,7 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -79,10 +82,21 @@ public class ViewItemCommand extends BotCommand {
                     .append(item.getTags().stream().map(it -> '#' + it).collect(Collectors.joining(", ")))
                     .append('\n');
 
+            var buttonCaption = item.isPublic() ? "Make private" : "Make public";
+            var data = item.getId() + ":toggle_public";
+
             sender.execute(SendMessage.builder()
                     .chatId(chatId)
                     .parseMode(ParseMode.MARKDOWN)
                     .text(sb.toString())
+                    .replyMarkup(InlineKeyboardMarkup.builder()
+                            .keyboardRow(
+                                    List.of(InlineKeyboardButton.builder()
+                                                    .text(buttonCaption)
+                                                    .callbackData(data)
+                                            .build())
+                            )
+                            .build())
                     .build());
         }
     }

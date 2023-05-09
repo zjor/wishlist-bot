@@ -10,6 +10,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
@@ -41,48 +42,67 @@ public class WishListBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
-            Message message = update.getMessage();
-            var chat = message.getChat();
-            var chatId = message.getChatId();
-            String userId = String.valueOf(message.getChatId());
-            var text = message.getText();
+            handleMessageUpdate(update.getMessage());
+        } else if (update.hasCallbackQuery()) {
+            handleCallbackQuery(update.getCallbackQuery());
+        }
+    }
 
-            var command = currentCommands.get(userId);
-            if (command != null && command.isFinished()) {
-                currentCommands.remove(userId);
-                command = null;
-            }
+    private void handleMessageUpdate(Message message) {
+        var chat = message.getChat();
+        var chatId = message.getChatId();
+        String userId = String.valueOf(message.getChatId());
+        var text = message.getText();
 
-            log.info("Ensuring user exists: ID {}", userId);
-            var user = userRepository.ensure(String.valueOf(chatId), chat.getUserName(), chat.getFirstName(), chat.getLastName());
+        var command = currentCommands.get(userId);
+        if (command != null && command.isFinished()) {
+            currentCommands.remove(userId);
+            command = null;
+        }
 
-            if (text.startsWith("/start")) {
-                handleStart(message);
-            } else if (text.startsWith("/create")) {
-                currentCommands.put(
-                        userId,
-                        new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository)
-                                .start());
-            } else if (text.startsWith("/cancel")) {
-                if (command != null) {
-                    command.cancel();
-                } else {
-                    reply(message, "There is nothing to cancel");
-                }
-            } else if (text.startsWith("/list")) {
-                new ListItemsCommand(this, chatId, user, wishlistItemRepository).start();
-            } else if (text.startsWith("/view")) {
-                currentCommands.put(
-                        userId,
-                        new ViewItemCommand(this, chatId, text, user, wishlistItemRepository)
-                                .start());
+        log.info("Ensuring user exists: ID {}", userId);
+        var user = userRepository.ensure(String.valueOf(chatId), chat.getUserName(), chat.getFirstName(), chat.getLastName());
+
+        if (text.startsWith("/start")) {
+            handleStart(message);
+        } else if (text.startsWith("/create")) {
+            currentCommands.put(
+                    userId,
+                    new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository)
+                            .start());
+        } else if (text.startsWith("/cancel")) {
+            if (command != null) {
+                command.cancel();
             } else {
-                if (command != null) {
-                    command.text(text);
-                } else {
-                    reply(message, "Say `/create` or `/list`");
-                }
+                reply(message, "There is nothing to cancel");
             }
+        } else if (text.startsWith("/list")) {
+            new ListItemsCommand(this, chatId, user, wishlistItemRepository).start();
+        } else if (text.startsWith("/view")) {
+            currentCommands.put(
+                    userId,
+                    new ViewItemCommand(this, chatId, text, user, wishlistItemRepository)
+                            .start());
+        } else {
+            if (command != null) {
+                command.text(text);
+            } else {
+                reply(message, "Say `/create` or `/list`");
+            }
+        }
+    }
+
+    private void handleCallbackQuery(CallbackQuery callbackQuery) {
+        var data = callbackQuery.getData();
+        log.info("Callback : {}", callbackQuery.getData());
+        var tokens = data.split(":");
+        var itemId = tokens[0];
+        var command = tokens[1];
+        if (command.equals("toggle_public")) {
+            var item = wishlistItemRepository.findById(itemId).get();
+            item.setPublic(!item.isPublic());
+            wishlistItemRepository.save(item);
+            // TODO: reply
         }
     }
 
