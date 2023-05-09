@@ -2,27 +2,33 @@
 <html>
 <head>
     <title>Wishlist Bot</title>
-    <style>
-        body {
-            font-family: sans-serif;
-        }
-
-        .name {
-            font-weight: bold;
-        }
-
-        .author {
-            font-style: italic;
-        }
-
-        .description {
-            font-size: 0.8em;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="css/styles.css" />
 </head>
 <body>
+<header>Wishlist</header>
+<div class="container">
 
-<h1>Public items</h1>
+    <div class="item">
+        <div class="image">
+            <img src="/images/preview.png" alt="preview"/>
+        </div>
+        <div class="data">
+            <div class="name">A book</div>
+            <div class="description">Lorem ipsum</div>
+            <div class="tags">
+                <span>#book</span>
+                <span>#hobby</span>
+            </div>
+        </div>
+        <div class="link">
+            <a href="#">
+                <img src="/images/link.png" alt="link"/>
+            </a>
+        </div>
+    </div>
+
+</div>
+
 <div>
     <ul id="items"></ul>
 </div>

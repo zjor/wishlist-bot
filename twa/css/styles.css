@@ -1,0 +1,52 @@
+html, body, div, ul, li {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-family: "Helvetica Neue";
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 48px;
+    font-size: 1.5em;
+    font-weight: bolder;
+    background-color: lightgoldenrodyellow;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+}
+
+.item {
+    display: flex;
+    flex-direction: row;
+    padding-bottom: 8px;
+    align-items: center;
+}
+
+.item .data {
+    flex-grow: 1;
+}
+
+.item .description {
+    font-size: 0.9em;
+    color: #3e3e3e;
+}
+
+.item .data span {
+    background-color: aquamarine;
+    padding: 1px 8px;
+    font-size: 0.9em;
+    border-radius: 8px;
+}
+
+.item .link {
+    padding-right: 8px;
+}
