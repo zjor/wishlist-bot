@@ -2,6 +2,8 @@
 
 ## Product definition
 
+🔥[@wisshlist_bot](https://t.me/wisshlist_bot)
+
 A Telegram bot which allows users to keep track of their wishlist and share it with others.
 
 ## Functional requirements
@@ -30,5 +32,11 @@ A Telegram bot which allows users to keep track of their wishlist and share it w
 
 - [Deployment](ops/README.md)
 - [Database Migrations](docs/db-migrations.md)
+
+### Dev env
+- [Swagger UI](http://localhost:8080/swagger-ui/index.html)
 - [test bot](https://t.me/ruofeqnw_bot)
+
+### Production env
+- [Swagger UI](https://bot.wishlist.projects.royz.cc/swagger-ui/index.html)
 - [production bot](https://t.me/wisshlist_bot)
