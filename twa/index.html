@@ -1,49 +1,14 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wishlist Bot</title>
-    <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 <body>
-<header>Wishlist</header>
-<div id="items" class="container">
-</div>
-<script>
-    async function main() {
-        const url = 'https://bot.wishlist.projects.royz.cc/api/wishlist/public'
-        const items = await fetch(url)
-        const json = await items.json()
-
-        console.log(json)
-
-        const itemsList = document.getElementById('items')
-        json.forEach(item => {
-
-            const tagsList = item.tags.map(value => `<span>#${value}</span>`).join()
-
-            const itemElement = document.createElement('div')
-            itemElement.className = "item"
-            itemElement.innerHTML = `
-        <div class="image">
-            <img src="/images/preview.png" alt="preview"/>
-        </div>
-        <div class="data">
-            <div class="name">${item.name}</div>
-            <div class="description">${item.description.substring(0, 128)}</div>
-            <div class="tags">${tagsList}</div>
-        </div>
-        <div class="link">
-            <a href="${item.url}">
-                <img src="/images/link.png" alt="link"/>
-            </a>
-        </div>
-`
-            itemsList.appendChild(itemElement)
-        })
-    }
-
-    main().catch(console.error)
-</script>
-
+<div id="app"></div>
+<script type="module" src="/src/main.js"></script>
 </body>
 </html>
