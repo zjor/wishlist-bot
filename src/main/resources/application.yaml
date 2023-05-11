@@ -15,3 +15,7 @@ spring:
 telegram:
   botUsername:
   botToken:
+  webAppUrl: https://twa-wishlist-bot.surge.sh
+
+opengraph:
+  apiKey:

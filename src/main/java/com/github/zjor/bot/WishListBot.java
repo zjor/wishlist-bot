@@ -23,6 +23,7 @@ public class WishListBot extends TelegramLongPollingBot {
 
     private final UserRepository userRepository;
     private final WishlistItemRepository wishlistItemRepository;
+    private final String webAppUrl;
 
     /**
      * telegram ID -> current user's command
@@ -32,10 +33,12 @@ public class WishListBot extends TelegramLongPollingBot {
     public WishListBot(
             String botToken,
             UserRepository userRepository,
-            WishlistItemRepository wishlistItemRepository) {
+            WishlistItemRepository wishlistItemRepository,
+            String webAppUrl) {
         super(botToken);
         this.userRepository = userRepository;
         this.wishlistItemRepository = wishlistItemRepository;
+        this.webAppUrl = webAppUrl;
     }
 
     @SneakyThrows
@@ -77,7 +80,7 @@ public class WishListBot extends TelegramLongPollingBot {
                 reply(message, "There is nothing to cancel");
             }
         } else if (text.startsWith("/list")) {
-            new ListItemsCommand(this, chatId, user, wishlistItemRepository).start();
+            new ListItemsCommand(this, chatId, user, wishlistItemRepository, webAppUrl).start();
         } else if (text.startsWith("/view")) {
             currentCommands.put(
                     userId,

@@ -14,8 +14,9 @@ public class ApplicationConfiguration {
     public WishListBot wishListBot(
             @Value("${telegram.botToken}") String token,
             UserRepository userRepository,
-            WishlistItemRepository wishlistItemRepository) {
-        return new WishListBot(token, userRepository, wishlistItemRepository);
+            WishlistItemRepository wishlistItemRepository,
+            @Value("${telegram.webAppUrl}") String webAppUrl) {
+        return new WishListBot(token, userRepository, wishlistItemRepository, webAppUrl);
     }
 
 }

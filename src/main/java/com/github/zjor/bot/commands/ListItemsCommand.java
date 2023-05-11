@@ -15,15 +15,17 @@ public class ListItemsCommand extends BotCommand {
 
     private final User user;
     private final WishlistItemRepository wishlistItemRepository;
+    private final String webAppUrl;
 
     public ListItemsCommand(
             DefaultAbsSender sender,
             Long chatId,
             User user,
-            WishlistItemRepository wishlistItemRepository) {
+            WishlistItemRepository wishlistItemRepository, String webAppUrl) {
         super(sender, chatId);
         this.user = user;
         this.wishlistItemRepository = wishlistItemRepository;
+        this.webAppUrl = webAppUrl;
     }
 
     @SneakyThrows
@@ -41,8 +43,6 @@ public class ListItemsCommand extends BotCommand {
         if (sb.isEmpty()) {
             sb.append("No items yet, please type `/create` to add");
         }
-//        var webAppUrl = "https://fbad-2a00-1028-838c-1796-c810-306d-54b1-79fd.ngrok-free.app/";
-        var webAppUrl = "https://twa-wishlist-bot.surge.sh";
         sender.execute(SendMessage.builder()
                 .chatId(chatId)
                 .text(sb.append('\n').toString())
