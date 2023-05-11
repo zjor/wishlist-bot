@@ -23,7 +23,8 @@ public class OpenGraphClient {
         this.apiKey = apiKey;
     }
 
-    public OpenGraphResponse fetchOpenGraph(String url) {
+    public RawResponse<OpenGraphResponse> fetchOpenGraph(String url) {
+        log.info("url: {}", url);
         try {
             var response = Unirest.get(BASE_URL + URLEncoder.encode(url, Charset.forName("UTF-8")))
                     .queryString("app_id", apiKey)
@@ -34,7 +35,11 @@ public class OpenGraphClient {
 
             // TODO: add global logging interceptor
             log.info("<= {}: {}", response.getStatus(), json);
-            return mapper.readValue(json, OpenGraphResponse.class);
+            if (response.isSuccess()) {
+                return RawResponse.of(json, mapper.readValue(json, OpenGraphResponse.class));
+            } else {
+                return RawResponse.of(json);
+            }
         } catch (JsonProcessingException e) {
             log.error("Failed to fetch open graph: " + e.getMessage(), e);
             throw new RuntimeException(e);

@@ -43,7 +43,7 @@ public class WishlistItem extends Born {
     private boolean isPublic;
 
     @Type(JsonType.class)
-    @Column(columnDefinition = "jsonb")
+    @Column(name = "tags", columnDefinition = "jsonb")
     private List<String> tags = new ArrayList<>();
 
 }
