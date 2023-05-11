@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
+/**
+ * A client for https://www.opengraph.io/
+ */
 @Slf4j
 public class OpenGraphClient {
     private static final String BASE_URL = "https://opengraph.io/api/1.1/site/";
