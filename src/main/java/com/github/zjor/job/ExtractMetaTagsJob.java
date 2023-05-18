@@ -45,7 +45,7 @@ public class ExtractMetaTagsJob {
                 continue;
             }
             try {
-                var response = openGraphClient.fetchOpenGraph(item.getUrl());
+                var response = openGraphClient.fetchOpenGraph(item.getUrl(), false);
                 if (response.success) {
                     var data = response.data.get().getHybridGraph();
                     log.info("Saving meta: {}", data);
@@ -60,6 +60,8 @@ public class ExtractMetaTagsJob {
                     metaRepository.save(WishlistItemMeta.builder()
                             .item(item)
                             .raw(response.raw)
+                            .isError(true)
+                            .errorMessage(response.exception.map(Exception::getMessage).orElse(null))
                             .build());
                 }
             } catch (Exception e) {

@@ -2,6 +2,7 @@ package com.github.zjor;
 
 import com.github.zjor.bot.WishListBot;
 import com.github.zjor.ext.unirest.UnirestLoggingInterceptor;
+import com.github.zjor.job.ExtractMetaTagsJob;
 import kong.unirest.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -33,7 +34,7 @@ public class App {
 //            System.out.println(u);
 //        });
 //
-//        var extractMetaTagsJob = context.getBean(ExtractMetaTagsJob.class);
-//        extractMetaTagsJob.extractAndSaveMeta();
+        var extractMetaTagsJob = context.getBean(ExtractMetaTagsJob.class);
+        extractMetaTagsJob.extractAndSaveMeta();
     }
 }
