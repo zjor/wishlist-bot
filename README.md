@@ -6,6 +6,19 @@
 
 A Telegram bot which allows users to keep track of their wishlist and share it with others.
 
+- [Requirements](docs/requirements.md)
+- [Architecture](docs/architecture.md)
+
+---
+
+## Support the project
+
+<a href="https://www.buymeacoffee.com/zjor" target="_blank">
+<img src="https://cdn.buymeacoffee.com/buttons/v2/default-violet.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" >
+</a>
+
+---
+
 ## Functional requirements
 
 - user has CRUD (create, update, delete) functionality for a wish list item
