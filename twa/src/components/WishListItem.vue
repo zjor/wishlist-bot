@@ -1,12 +1,19 @@
 <script setup>
 import FaLinkIcon from "@/components/icons/FaLinkIcon.vue";
 import {isValidUrl} from "@/lib/utils";
+import {onMounted, ref} from "vue";
 
 const props = defineProps({
   name: String,
   description: String,
   tags: Array[String],
   url: String
+})
+
+const tags = ref([])
+
+onMounted(() => {
+  tags.value = props.tags.slice(0, 3)
 })
 </script>
 
@@ -21,7 +28,7 @@ const props = defineProps({
       <div class="name">{{ props.name }}</div>
       <div class="description">{{ props.description }}</div>
       <div class="tags flex-row">
-        <div class="tag" v-for="tag in props.tags" :key="tag">
+        <div class="tag" v-for="tag in tags" :key="tag">
           #{{ tag }}
         </div>
       </div>
@@ -38,7 +45,7 @@ const props = defineProps({
 .item {
   padding: 8px;
   position: relative;
-  box-sizing: border-box;
+  /*box-sizing: border-box;*/
 }
 .item:not(:last-child):after {
   content: "";
@@ -61,6 +68,11 @@ const props = defineProps({
 
 .description {
   font-size: 0.9em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .tags {
