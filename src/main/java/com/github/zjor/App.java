@@ -2,6 +2,7 @@ package com.github.zjor;
 
 import com.github.zjor.bot.WishListBot;
 import com.github.zjor.ext.unirest.UnirestLoggingInterceptor;
+import com.github.zjor.job.ExtractMetaTagsJob;
 import kong.unirest.Unirest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +16,8 @@ import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 @Slf4j
 @SpringBootApplication
 public class App {
+
+
 
     private void executeSql(JdbcTemplate db) {
         var query = """
@@ -53,9 +56,9 @@ public class App {
 //            System.out.println(u);
 //        });
 //
-//        var extractMetaTagsJob = context.getBean(ExtractMetaTagsJob.class);
-//        extractMetaTagsJob.extractAndSaveMeta();
-        App app = context.getBean(App.class);
-        app.executeSql(context.getBean(JdbcTemplate.class));
+        var extractMetaTagsJob = context.getBean(ExtractMetaTagsJob.class);
+        extractMetaTagsJob.extractAndSaveMeta();
+//        App app = context.getBean(App.class);
+//        app.executeSql(context.getBean(JdbcTemplate.class));
     }
 }

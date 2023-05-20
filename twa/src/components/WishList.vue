@@ -14,6 +14,7 @@ const props = defineProps({
         :name="item.name"
         :description="item.description"
         :tags="item.tags"
+        :image-url="item.imageUrl"
         :url="item.url"
     />
   </div>

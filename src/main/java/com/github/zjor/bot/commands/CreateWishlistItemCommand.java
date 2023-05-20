@@ -61,6 +61,7 @@ public class CreateWishlistItemCommand extends BotCommand {
         transition(new TextAction(text));
         if (state == State.DONE) {
             wishlistItemRepository.save(getContext().owner(user).build());
+            // TODO: load meta
         }
     }
 

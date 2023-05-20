@@ -7,10 +7,12 @@ const props = defineProps({
   name: String,
   description: String,
   tags: Array[String],
+  imageUrl: String,
   url: String
 })
 
 const tags = ref([])
+const defaultImageUrl = "https://res.cloudinary.com/zjor-storage/image/upload/v1684312235/wishlist_preview_vefxdb.png"
 
 onMounted(() => {
   tags.value = props.tags.slice(0, 3)
@@ -21,7 +23,7 @@ onMounted(() => {
   <div class="item flex-row flex-grow-1">
     <div class="preview">
       <img
-          src="https://res.cloudinary.com/zjor-storage/image/upload/v1684312235/wishlist_preview_vefxdb.png"
+          :src="props.imageUrl || defaultImageUrl"
           alt="preview">
     </div>
     <div class="details flex-col flex-grow-1">
