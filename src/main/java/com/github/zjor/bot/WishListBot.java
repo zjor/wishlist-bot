@@ -4,10 +4,12 @@ import com.github.zjor.bot.commands.BotCommand;
 import com.github.zjor.bot.commands.CreateWishlistItemCommand;
 import com.github.zjor.bot.commands.ListItemsCommand;
 import com.github.zjor.bot.commands.ViewItemCommand;
+import com.github.zjor.events.BotStartedEvent;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -30,15 +32,19 @@ public class WishListBot extends TelegramLongPollingBot {
      */
     private final Map<String, BotCommand> currentCommands = new HashMap<>();
 
+    private final ApplicationEventPublisher eventPublisher;
+
     public WishListBot(
             String botToken,
             UserRepository userRepository,
             WishlistItemRepository wishlistItemRepository,
-            String webAppUrl) {
+            String webAppUrl,
+            ApplicationEventPublisher eventPublisher) {
         super(botToken);
         this.userRepository = userRepository;
         this.wishlistItemRepository = wishlistItemRepository;
         this.webAppUrl = webAppUrl;
+        this.eventPublisher = eventPublisher;
     }
 
     @SneakyThrows
@@ -63,6 +69,7 @@ public class WishListBot extends TelegramLongPollingBot {
             command = null;
         }
 
+        // TODO: ensure only on start command
         log.info("Ensuring user exists: ID {}", userId);
         var user = userRepository.ensure(String.valueOf(chatId), chat.getUserName(), chat.getFirstName(), chat.getLastName());
 
@@ -71,7 +78,7 @@ public class WishListBot extends TelegramLongPollingBot {
         } else if (text.startsWith("/create")) {
             currentCommands.put(
                     userId,
-                    new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository)
+                    new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository, eventPublisher)
                             .start());
         } else if (text.startsWith("/cancel")) {
             if (command != null) {
@@ -116,6 +123,7 @@ public class WishListBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     private void handleStart(Message message) {
+        eventPublisher.publishEvent(BotStartedEvent.of(message.getChat()));
         reply(message, String.format("Hello %s!\nWelcome to the WishListBot", message.getChat().getFirstName()));
     }
 

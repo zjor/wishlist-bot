@@ -7,6 +7,7 @@ import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemMetaRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,8 +19,9 @@ public class ApplicationConfiguration {
             @Value("${telegram.botToken}") String token,
             UserRepository userRepository,
             WishlistItemRepository wishlistItemRepository,
-            @Value("${telegram.webAppUrl}") String webAppUrl) {
-        return new WishListBot(token, userRepository, wishlistItemRepository, webAppUrl);
+            @Value("${telegram.webAppUrl}") String webAppUrl,
+            ApplicationEventPublisher eventPublisher) {
+        return new WishListBot(token, userRepository, wishlistItemRepository, webAppUrl, eventPublisher);
     }
 
     @Bean

@@ -2,9 +2,11 @@ package com.github.zjor.bot.commands;
 
 import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
+import com.github.zjor.events.WishlistItemCreatedEvent;
 import com.github.zjor.repository.WishlistItemRepository;
 import com.github.zjor.util.ListUtils;
 import lombok.Getter;
+import org.springframework.context.ApplicationEventPublisher;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 
 enum State {
@@ -32,15 +34,18 @@ public class CreateWishlistItemCommand extends BotCommand {
 
     private final User user;
     private final WishlistItemRepository wishlistItemRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public CreateWishlistItemCommand(
             DefaultAbsSender sender,
             Long chatId,
             User user,
-            WishlistItemRepository wishlistItemRepository) {
+            WishlistItemRepository wishlistItemRepository,
+            ApplicationEventPublisher eventPublisher) {
         super(sender, chatId);
         this.user = user;
         this.wishlistItemRepository = wishlistItemRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     private State state = State.STARTED;
@@ -60,8 +65,8 @@ public class CreateWishlistItemCommand extends BotCommand {
     public void text(String text) {
         transition(new TextAction(text));
         if (state == State.DONE) {
-            wishlistItemRepository.save(getContext().owner(user).build());
-            // TODO: load meta
+            var item = wishlistItemRepository.save(getContext().owner(user).build());
+            eventPublisher.publishEvent(new WishlistItemCreatedEvent(user.getId(), item.getId()));
         }
     }
 
