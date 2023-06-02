@@ -58,6 +58,12 @@ spec:
                   name: {{ .Values.app }}-secrets
                   key: TELEGRAM_CREATORID
                   optional: false
+            - name: OPENGRAPH_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: OPENGRAPH_APIKEY
+                  optional: false
             - name: VCS_REF
               value: {{ .Values.version }}
           livenessProbe:

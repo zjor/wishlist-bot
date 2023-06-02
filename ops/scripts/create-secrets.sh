@@ -15,4 +15,5 @@ kubectl create secret generic ${APP}-secrets \
   --from-literal=TELEGRAM_BOTUSERNAME=${TELEGRAM_BOTUSERNAME} \
   --from-literal=TELEGRAM_BOTTOKEN=${TELEGRAM_BOTTOKEN} \
   --from-literal=TELEGRAM_CREATORID=${TELEGRAM_CREATORID} \
+  --from-literal=OPENGRAPH_APIKEY=${OPENGRAPH_APIKEY} \
   -n ${NAMESPACE}
