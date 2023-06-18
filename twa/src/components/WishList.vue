@@ -1,9 +1,17 @@
 <script setup>
 import WishListItem from "@/components/WishListItem.vue"
+import {useUiStateStore} from "@/stores/uiStateStore";
 
 const props = defineProps({
   items: Array
 })
+
+const uiStore = useUiStateStore()
+
+function onItemClick(item) {
+  uiStore.setSelectedItem(item)
+}
+
 </script>
 
 <template>
@@ -11,6 +19,7 @@ const props = defineProps({
     <WishListItem
         v-for="item in props.items"
         :key="item.id"
+        @click="onItemClick(item)"
         :name="item.name"
         :description="item.description"
         :tags="item.tags"

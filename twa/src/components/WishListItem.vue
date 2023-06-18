@@ -2,6 +2,7 @@
 import FaLinkIcon from "@/components/icons/FaLinkIcon.vue";
 import {isValidUrl} from "@/lib/utils";
 import {onMounted, ref} from "vue";
+import {DEFAULT_IMAGE_URL} from "@/stores/uiStateStore";
 
 const props = defineProps({
   name: String,
@@ -12,7 +13,6 @@ const props = defineProps({
 })
 
 const tags = ref([])
-const defaultImageUrl = "https://res.cloudinary.com/zjor-storage/image/upload/v1684312235/wishlist_preview_vefxdb.png"
 
 onMounted(() => {
   tags.value = props.tags.slice(0, 3)
@@ -23,7 +23,7 @@ onMounted(() => {
   <div class="item flex-row flex-grow-1">
     <div class="preview">
       <img
-          :src="props.imageUrl || defaultImageUrl"
+          :src="props.imageUrl || DEFAULT_IMAGE_URL"
           alt="preview">
     </div>
     <div class="details flex-col flex-grow-1">
@@ -100,8 +100,8 @@ onMounted(() => {
 }
 
 .preview img {
-  width: 64px;
-  height: 64px;
+  max-width: 64px;
+  max-height: 64px;
 }
 
 </style>
