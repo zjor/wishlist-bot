@@ -16,8 +16,16 @@ public class ControllerUtils {
         return new ResponseStatusException(HttpStatusCode.valueOf(HttpStatus.NOT_FOUND.value()), message);
     }
 
+    public static ResponseStatusException unauthorized(String message) {
+        return new ResponseStatusException(HttpStatusCode.valueOf(HttpStatus.UNAUTHORIZED.value()), message);
+    }
+
     public static Supplier<ResponseStatusException> notFoundSupplier(String message) {
         return () -> notFound(message);
+    }
+
+    public static Supplier<ResponseStatusException> unauthorizedSupplier(String message) {
+        return () -> unauthorized(message);
     }
 
 }
