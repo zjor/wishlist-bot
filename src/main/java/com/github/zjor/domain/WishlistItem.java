@@ -56,6 +56,7 @@ public class WishlistItem extends Born {
     @Column(name = "tags", columnDefinition = "jsonb")
     private List<String> tags = new ArrayList<>();
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status = Status.OPEN;
