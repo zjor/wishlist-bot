@@ -1,7 +1,6 @@
 <script setup>
 import {onMounted, ref} from 'vue'
-import {telegramId, logConfig} from "@/lib/config";
-import {getPrivateItems, getPublicItems} from "@/lib/api";
+import {logConfig} from "@/lib/config";
 import {useWishlistStore} from "@/stores/wishlistStore";
 import {useUiStateStore, PRIVATE_TAB, PUBLIC_TAB, SEARCH_TAB, PROFILE_TAB} from "@/stores/uiStateStore";
 import WishList from "@/components/WishList.vue";
@@ -11,18 +10,9 @@ const wishlistStore = useWishlistStore()
 const uiState = useUiStateStore()
 const tab = ref(null)
 
-async function loadWishlist() {
-  const [publicItems, privateItems] = await Promise.all([
-    getPublicItems(),
-    getPrivateItems(telegramId)
-  ])
-  wishlistStore.setPublicItems(publicItems)
-  wishlistStore.setPrivateItems(privateItems)
-}
-
 onMounted(async () => {
   logConfig()
-  await loadWishlist()
+  await wishlistStore.loadAllItems()
 })
 
 </script>

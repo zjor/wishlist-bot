@@ -1,9 +1,9 @@
 <script setup>
 import {DEFAULT_IMAGE_URL, useUiStateStore} from "@/stores/uiStateStore"
+import {useWishlistStore} from "@/stores/wishlistStore"
 import {ref} from "vue"
-import {telegramId} from "@/lib/config";
-import {setIsPublic} from "@/lib/api"
 
+const wishlistStore = useWishlistStore()
 const uiState = useUiStateStore()
 const defaultImageUrl = ref(DEFAULT_IMAGE_URL)
 const isPublic = ref(uiState.selectedItem.public)
@@ -13,10 +13,11 @@ function onBackClick() {
   uiState.setSelectedItem(undefined)
 }
 
-async function onPrivateToggle(value) {
-  console.log(value)
+async function onPrivateToggle() {
   isPublicLoading.value = true
-  const response = await setIsPublic(telegramId, uiState.selectedItem.id, !isPublic.value)
+  const item = uiState.selectedItem
+  const response = await wishlistStore.setIsPublicAndUpdate(item.id, !item.public)
+  uiState.setSelectedItem(response)
   isPublic.value = response.public
   isPublicLoading.value = false
 }
