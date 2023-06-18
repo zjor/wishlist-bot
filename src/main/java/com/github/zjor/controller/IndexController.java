@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Collections;
 import java.util.Map;
@@ -20,8 +19,8 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public RedirectView index() {
-        return new RedirectView("/actuator/health");
+    public Map<String, String> index() {
+        return Collections.singletonMap("status", "ok");
     }
 
     @GetMapping("version")

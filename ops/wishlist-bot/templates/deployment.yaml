@@ -64,22 +64,28 @@ spec:
                   name: {{ .Values.app }}-secrets
                   key: OPENGRAPH_APIKEY
                   optional: false
+            - name: CLOUDINARY_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.app }}-secrets
+                  key: CLOUDINARY_URL
+                  optional: false
             - name: VCS_REF
               value: {{ .Values.version }}
           livenessProbe:
             # failureThreshold: 10
-            initialDelaySeconds: 90
+            initialDelaySeconds: 60
             periodSeconds: 15
             httpGet:
-              path: /actuator/health
+              path: /
               port: 8080
               scheme: HTTP
           readinessProbe:
             # failureThreshold: 10
-            initialDelaySeconds: 60
+            initialDelaySeconds: 40
             periodSeconds: 10
             failureThreshold: 12
             httpGet:
-              path: /actuator/health
+              path: /
               port: 8080
               scheme: HTTP

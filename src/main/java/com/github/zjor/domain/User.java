@@ -31,4 +31,7 @@ public class User extends Born {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
 }
