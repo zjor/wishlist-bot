@@ -32,8 +32,21 @@ async function getPrivateItems(telegramId) {
   return response.data
 }
 
+async function setIsPublic(telegramId, itemId, isPublic) {
+  log.info('[setIsPublic] => ')
+
+  const url = `${baseUrl}/api/wishlist/private/${itemId}/is-public`
+  const response = await axios.post(url, {public: isPublic}, {
+    headers: getHeaders(telegramId),
+    validateStatus: false
+  })
+  log.info('[setIsPublic] <= ', response.status, response.data)
+  return response.data
+}
+
 
 export {
   getPublicItems,
   getPrivateItems,
+  setIsPublic
 }

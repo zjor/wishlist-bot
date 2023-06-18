@@ -1,6 +1,8 @@
 <script setup>
 import {DEFAULT_IMAGE_URL, useUiStateStore} from "@/stores/uiStateStore"
 import {ref} from "vue"
+import {telegramId} from "@/lib/config";
+import {setIsPublic} from "@/lib/api"
 
 const uiState = useUiStateStore()
 const defaultImageUrl = ref(DEFAULT_IMAGE_URL)
@@ -11,14 +13,12 @@ function onBackClick() {
   uiState.setSelectedItem(undefined)
 }
 
-function onPrivateToggle(value) {
+async function onPrivateToggle(value) {
   console.log(value)
   isPublicLoading.value = true
-  setTimeout(() => {
-    isPublic.value = !isPublic.value
-    isPublicLoading.value = false
-  }, 1000)
-
+  const response = await setIsPublic(telegramId, uiState.selectedItem.id, !isPublic.value)
+  isPublic.value = response.public
+  isPublicLoading.value = false
 }
 
 </script>
