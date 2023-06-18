@@ -58,7 +58,7 @@ public class WishlistItem extends Born {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status;
+    private Status status = Status.OPEN;
 
     @Column(name = "price")
     private BigDecimal price;
