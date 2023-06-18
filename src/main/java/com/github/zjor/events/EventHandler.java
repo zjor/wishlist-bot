@@ -36,11 +36,14 @@ public class EventHandler {
         this.cloudinary = cloudinary;
     }
 
-    @Async
-    @EventListener
-    public void onBotStarted(BotStartedEvent event) {
-        log.info("[onBotStarted] {}: {}", Thread.currentThread().getName(), event);
-        var opt = telegramClient.getUserProfilePhotoInputStream(event.telegramId());
+    private void fetchAndCacheUserImage(long telegramId) {
+        var userOpt = userRepository.findUserByExtId(String.valueOf(telegramId));
+        if (userOpt.isEmpty()) {
+            log.warn("User not found: telegramId: {}", telegramId);
+            return;
+        }
+        var user = userOpt.get();
+        var opt = telegramClient.getUserProfilePhotoInputStream(telegramId);
         if (opt.isPresent()) {
             var imageStream = opt.get();
             Map params = ObjectUtils.asMap(
@@ -54,15 +57,19 @@ public class EventHandler {
                 var imageUrl = (String) uploaded.get("secure_url");
                 log.info("Image URL: {}", imageUrl);
 
-                userRepository.findUserByExtId(String.valueOf(event.telegramId()))
-                        .ifPresent(user -> {
-                            user.setImageUrl(imageUrl);
-                            userRepository.save(user);
-                        });
+                user.setImageUrl(imageUrl);
+                userRepository.save(user);
             } catch (IOException ex) {
                 log.error("Failed to upload an image: " + ex.getMessage(), ex);
             }
         }
+    }
+
+    @Async
+    @EventListener
+    public void onBotStarted(BotStartedEvent event) {
+        log.info("[onBotStarted] {}: {}", Thread.currentThread().getName(), event);
+        fetchAndCacheUserImage(event.telegramId());
     }
 
     @Async
