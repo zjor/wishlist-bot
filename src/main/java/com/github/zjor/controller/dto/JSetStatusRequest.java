@@ -1,6 +1,6 @@
 package com.github.zjor.controller.dto;
 
-import com.github.zjor.domain.WishlistItem;
+import com.github.zjor.domain.ItemStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class JSetStatusRequest {
-    private WishlistItem.Status status;
+    private ItemStatus status;
 }

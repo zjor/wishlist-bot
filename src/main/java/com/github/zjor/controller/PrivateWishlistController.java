@@ -3,6 +3,7 @@ package com.github.zjor.controller;
 import com.github.zjor.controller.dto.JSetIsPublicRequest;
 import com.github.zjor.controller.dto.JSetStatusRequest;
 import com.github.zjor.controller.dto.JWishlistItem;
+import com.github.zjor.domain.ItemStatus;
 import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
 import com.github.zjor.ext.spring.auth.AuthUser;
@@ -13,11 +14,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+import static com.github.zjor.controller.ControllerUtils.badRequest;
 import static com.github.zjor.controller.ControllerUtils.notFoundSupplier;
 import static com.github.zjor.controller.ControllerUtils.unauthorized;
 
@@ -36,8 +41,15 @@ public class PrivateWishlistController {
     }
 
     @GetMapping
-    public List<JWishlistItem> getItems(@AuthUser User user) {
-        var items = wishlistItemRepository.findByOwner(user);
+    public List<JWishlistItem> getItems(
+            @RequestParam(value = "excludeStatuses", required = false) Set<ItemStatus> excludedStatuses,
+            @AuthUser User user) {
+
+        // TODO: filter by SQL
+        var items = wishlistItemRepository.findByOwner(user).stream().filter(item ->
+                excludedStatuses == null || excludedStatuses.isEmpty() || !excludedStatuses.contains(item.getStatus()))
+                .collect(Collectors.toList());
+
         var result = new LinkedList<JWishlistItem>();
         for (WishlistItem item: items) {
             var meta = wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item);
@@ -66,7 +78,10 @@ public class PrivateWishlistController {
             throw unauthorized(id);
         }
 
-        // TODO: check transition table
+        if (!item.getStatus().canTransitionTo(req.getStatus())) {
+            throw badRequest("Can't transition " + item.getStatus() + " -> " + req.getStatus());
+        }
+
         item.setStatus(req.getStatus());
         item = wishlistItemRepository.save(item);
 

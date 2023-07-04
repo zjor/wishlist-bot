@@ -26,13 +26,6 @@ import java.util.List;
 @Table(name = "wishlist_items")
 public class WishlistItem extends Born {
 
-    public enum Status {
-        OPEN,
-        IN_PROGRESS,
-        DONE,
-        ARCHIVED
-    }
-
     @ManyToOne
     @JoinColumn(name = "owner_id", nullable = false)
     private User owner;
@@ -59,7 +52,7 @@ public class WishlistItem extends Born {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
-    private Status status = Status.OPEN;
+    private ItemStatus status = ItemStatus.OPEN;
 
     @Column(name = "price")
     private BigDecimal price;
