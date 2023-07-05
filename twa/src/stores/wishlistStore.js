@@ -1,24 +1,31 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-import {getPublicItems, getPrivateItems, setIsPublic} from "@/lib/api";
-import {telegramId} from "@/lib/config";
+import api from "@/lib/api";
 
 export const useWishlistStore = defineStore('wishlist', () => {
   const publicItems = ref([])
   const privateItems = ref([])
 
+  const privateItemDetails = ref({})
+
   async function loadAllItems() {
     const [publicItems, privateItems] = await Promise.all([
-      getPublicItems(),
-      getPrivateItems(telegramId)
+      api.getPublicItems(),
+      api.getPrivateItems()
     ])
     setPublicItems(publicItems)
     setPrivateItems(privateItems)
   }
 
   async function setIsPublicAndUpdate(itemId, isPublic) {
-    const response = await setIsPublic(telegramId, itemId, isPublic)
-    setPublicItems(await getPublicItems())
+    const response = await api.setIsPublic(itemId, isPublic)
+    setPublicItems(await api.getPublicItems())
+    return response
+  }
+
+  async function loadPrivateItemDetails(itemId) {
+    const response = await api.getPrivateItemDetails(itemId)
+    privateItemDetails.value = {...{[itemId]: response}, ...privateItemDetails.value}
     return response
   }
 
@@ -32,8 +39,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
   }
 
   return {
-    publicItems, privateItems,
+    publicItems, privateItems, privateItemDetails,
     setPublicItems, setPrivateItems,
-    loadAllItems, setIsPublicAndUpdate
+    loadAllItems, setIsPublicAndUpdate, loadPrivateItemDetails
   }
 })
