@@ -9,6 +9,8 @@ import com.github.zjor.domain.WishlistItem;
 import com.github.zjor.ext.spring.auth.AuthUser;
 import com.github.zjor.repository.WishlistItemMetaRepository;
 import com.github.zjor.repository.WishlistItemRepository;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,9 @@ import java.util.stream.Collectors;
 import static com.github.zjor.controller.ControllerUtils.badRequest;
 import static com.github.zjor.controller.ControllerUtils.notFoundSupplier;
 import static com.github.zjor.controller.ControllerUtils.unauthorized;
+import static com.github.zjor.controller.XHttpHeaders.X_TELEGRAM_USER;
 
+@SecurityRequirements({@SecurityRequirement(name = X_TELEGRAM_USER)})
 @RestController
 @RequestMapping("api/wishlist/private")
 public class PrivateWishlistController {
