@@ -1,8 +1,9 @@
 package com.github.zjor.controller;
 
+import com.github.zjor.controller.dto.JPrivateListWishlistItem;
+import com.github.zjor.controller.dto.JPrivateWishlistItemDetails;
 import com.github.zjor.controller.dto.JSetIsPublicRequest;
 import com.github.zjor.controller.dto.JSetStatusRequest;
-import com.github.zjor.controller.dto.JWishlistItem;
 import com.github.zjor.domain.ItemStatus;
 import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
@@ -45,7 +46,7 @@ public class PrivateWishlistController {
     }
 
     @GetMapping
-    public List<JWishlistItem> getItems(
+    public List<JPrivateListWishlistItem> getItems(
             @RequestParam(value = "excludeStatuses", required = false) Set<ItemStatus> excludedStatuses,
             @AuthUser User user) {
 
@@ -54,29 +55,29 @@ public class PrivateWishlistController {
                 excludedStatuses == null || excludedStatuses.isEmpty() || !excludedStatuses.contains(item.getStatus()))
                 .collect(Collectors.toList());
 
-        var result = new LinkedList<JWishlistItem>();
+        var result = new LinkedList<JPrivateListWishlistItem>();
         for (WishlistItem item: items) {
             var meta = wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item);
-            result.add(JWishlistItem.Convert.build(item, meta));
+            result.add(JPrivateListWishlistItem.Converter.build(item, meta));
         }
         return result;
     }
 
     @GetMapping("{id}")
-    public JWishlistItem get(@PathVariable("id") String id, @AuthUser User user) {
+    public JPrivateWishlistItemDetails get(@PathVariable("id") String id, @AuthUser User user) {
         var item = wishlistItemRepository.findById(id).orElseThrow(notFoundSupplier(id));
         if (!item.getOwner().equals(user)) {
             throw unauthorized(id);
         }
-        return JWishlistItem.Convert.build(
+        return JPrivateWishlistItemDetails.Converter.build(
                 item,
                 wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item));
     }
 
     @PostMapping("{id}/status")
-    public JWishlistItem setStatus(@PathVariable("id") String id,
-                                   @RequestBody JSetStatusRequest req,
-                                   @AuthUser User user) {
+    public JPrivateWishlistItemDetails setStatus(@PathVariable("id") String id,
+                                                @RequestBody JSetStatusRequest req,
+                                                @AuthUser User user) {
         var item = wishlistItemRepository.findById(id).orElseThrow(notFoundSupplier(id));
         if (!item.getOwner().equals(user)) {
             throw unauthorized(id);
@@ -89,15 +90,15 @@ public class PrivateWishlistController {
         item.setStatus(req.getStatus());
         item = wishlistItemRepository.save(item);
 
-        return JWishlistItem.Convert.build(
+        return JPrivateWishlistItemDetails.Converter.build(
                 item,
                 wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item));
     }
 
     @PostMapping("{id}/is-public")
-    public JWishlistItem setIsPublic(@PathVariable("id") String id,
-                                     @RequestBody JSetIsPublicRequest req,
-                                     @AuthUser User user) {
+    public JPrivateWishlistItemDetails setIsPublic(@PathVariable("id") String id,
+                                                  @RequestBody JSetIsPublicRequest req,
+                                                  @AuthUser User user) {
         var item = wishlistItemRepository.findById(id).orElseThrow(notFoundSupplier(id));
         if (!item.getOwner().equals(user)) {
             throw unauthorized(id);
@@ -105,7 +106,7 @@ public class PrivateWishlistController {
         item.setPublic(req.isPublic());
         item = wishlistItemRepository.save(item);
 
-        return JWishlistItem.Convert.build(
+        return JPrivateWishlistItemDetails.Converter.build(
                 item,
                 wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item));
     }

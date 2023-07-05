@@ -17,16 +17,15 @@ import java.util.Optional;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class JWishlistItem {
+public class JPublicWishlistItemDetails {
 
     private String id;
-    private String ownerId;
+    private JUser owner;
     private String name;
     private String description;
     private String imageUrl;
     private String url;
     private List<String> tags;
-    private boolean isPublic;
     private ItemStatus status;
     private BigDecimal price;
     private String currency;
@@ -34,17 +33,16 @@ public class JWishlistItem {
 
     private List<Pair<ItemStatus, Boolean>> allowedStatuses;
 
-    public static class Convert {
-        public static JWishlistItem build(WishlistItem item, Optional<WishlistItemMeta> meta) {
-            var builder = JWishlistItem.builder()
+    public static class Converter {
+        public static JPublicWishlistItemDetails build(WishlistItem item, Optional<WishlistItemMeta> meta) {
+            var builder = JPublicWishlistItemDetails.builder()
                     .id(item.getId())
-                    .ownerId(item.getOwner().getId())
+                    .owner(JUser.Converter.build(item.getOwner()))
                     .name(item.getName())
                     .description(item.getDescription())
                     .imageUrl(item.getImageUrl())
                     .url(item.getUrl())
                     .tags(item.getTags())
-                    .isPublic(item.isPublic())
                     .status(item.getStatus())
                     .price(item.getPrice())
                     .currency(item.getCurrency())

@@ -1,6 +1,6 @@
 package com.github.zjor.controller;
 
-import com.github.zjor.controller.dto.JWishlistItem;
+import com.github.zjor.controller.dto.JPublicListWishlistItem;
 import com.github.zjor.domain.WishlistItem;
 import com.github.zjor.repository.WishlistItemMetaRepository;
 import com.github.zjor.repository.WishlistItemRepository;
@@ -26,12 +26,12 @@ public class PublicWishlistController {
     }
 
     @GetMapping
-    public List<JWishlistItem> getPublicItems() {
+    public List<JPublicListWishlistItem> getPublicItems() {
         var items = wishlistItemRepository.findWishlistItemByIsPublicOrderByCreatedAtDesc(true);
-        var result = new LinkedList<JWishlistItem>();
+        var result = new LinkedList<JPublicListWishlistItem>();
         for (WishlistItem item: items) {
             var meta = wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item);
-            result.add(JWishlistItem.Convert.build(item, meta));
+            result.add(JPublicListWishlistItem.Converter.build(item, meta));
         }
         return result;
     }
