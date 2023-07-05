@@ -143,7 +143,7 @@ onMounted(async () => {
 }
 
 .actions button {
-  min-width: 128px;
+  /*min-width: 128px;*/
 }
 
 </style>
