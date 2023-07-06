@@ -7,6 +7,7 @@ import PrivateWishList from "@/components/PrivateWishList.vue";
 import PublicWishList from "@/components/PublicWishList.vue";
 import PrivateWishlistItemDetails from "@/components/PrivateWishlistItemDetails.vue";
 import PublicWishlistItemDetails from "@/components/PublicWishlistItemDetails.vue";
+import Profile from "@/components/Profile.vue";
 
 const wishlistStore = useWishlistStore()
 const uiState = useUiStateStore()
@@ -35,10 +36,8 @@ onMounted(async () => {
           Search will be there
         </v-container>
       </v-window-item>
-      <v-window-item value="profile_tab" transition="none" style="background-color: fuchsia">
-        <v-container>
-          Profile goes here
-        </v-container>
+      <v-window-item value="profile_tab" transition="none">
+        <Profile/>
       </v-window-item>
     </v-window>
 

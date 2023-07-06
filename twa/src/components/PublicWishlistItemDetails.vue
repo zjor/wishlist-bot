@@ -1,5 +1,4 @@
 <script setup>
-import {ref} from "vue"
 import {DEFAULT_IMAGE_URL, useUiStateStore} from "@/stores/uiStateStore"
 
 const uiState = useUiStateStore()
