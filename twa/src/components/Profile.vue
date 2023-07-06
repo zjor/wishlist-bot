@@ -1,8 +1,17 @@
 <script setup>
+import {useWishlistStore} from "@/stores/wishlistStore"
+
+const store = useWishlistStore()
 
 const coverIds = [11, 12, 14, 17, 18, 20, 23, 24, 25, 26, 29]
 const coverId = Math.floor(Math.random() * coverIds.length)
-const avatarUrl = `https://robohash.org/${coverId}`
+
+const {firstName, lastName, username, imageUrl} = store.profile
+
+let name = firstName
+if (lastName && lastName.length > 0) {
+  name += ` ${lastName.slice(0, 1).toUpperCase()}.`
+}
 
 </script>
 
@@ -11,14 +20,16 @@ const avatarUrl = `https://robohash.org/${coverId}`
     <img :src="`https://picsum.photos/id/${coverId}/768/144`">
 
     <div class="avatar flex-row flex-center">
-      <img id="avatar" :src="avatarUrl"/>
+      <img id="avatar" :src="imageUrl"/>
     </div>
 
     <div class="content flex-col flex-center pt-4">
       <div class="flex-row flex-center">
-        <div class="name">Mike J.</div>
+        <div class="name">{{ name }}</div>
       </div>
-      <div class="username">@username</div>
+      <div class="username" v-if="username">
+        @{{ username }}
+      </div>
     </div>
 
     <div class="flex-row pt-10">

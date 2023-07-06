@@ -16,6 +16,7 @@ const tab = ref(null)
 onMounted(async () => {
   logConfig()
   await wishlistStore.loadAllItems()
+  await wishlistStore.loadProfile()
 })
 
 </script>

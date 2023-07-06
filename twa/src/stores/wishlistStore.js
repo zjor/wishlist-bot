@@ -5,6 +5,7 @@ import api from "@/lib/api";
 export const useWishlistStore = defineStore('wishlist', () => {
   const publicItems = ref([])
   const privateItems = ref([])
+  const profile = ref({})
 
   const privateItemDetails = ref({})
 
@@ -29,6 +30,11 @@ export const useWishlistStore = defineStore('wishlist', () => {
     return response
   }
 
+  async function loadProfile() {
+    const response = await api.getMyProfile()
+    profile.value = response
+  }
+
 
   function setPublicItems(value) {
     publicItems.value = value || []
@@ -39,8 +45,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
   }
 
   return {
-    publicItems, privateItems, privateItemDetails,
+    publicItems, privateItems, privateItemDetails, profile,
     setPublicItems, setPrivateItems,
-    loadAllItems, setIsPublicAndUpdate, loadPrivateItemDetails
+    loadAllItems, setIsPublicAndUpdate, loadPrivateItemDetails, loadProfile
   }
 })
