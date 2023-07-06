@@ -3,8 +3,10 @@ import {onMounted, ref} from 'vue'
 import {logConfig} from "@/lib/config";
 import {useWishlistStore} from "@/stores/wishlistStore";
 import {useUiStateStore, PRIVATE_TAB, PUBLIC_TAB, SEARCH_TAB, PROFILE_TAB} from "@/stores/uiStateStore";
-import WishList from "@/components/WishList.vue";
-import WishlistItemDetails from "@/components/WishlistItemDetails.vue";
+import PrivateWishList from "@/components/PrivateWishList.vue";
+import PublicWishList from "@/components/PublicWishList.vue";
+import PrivateWishlistItemDetails from "@/components/PrivateWishlistItemDetails.vue";
+import PublicWishlistItemDetails from "@/components/PublicWishlistItemDetails.vue";
 
 const wishlistStore = useWishlistStore()
 const uiState = useUiStateStore()
@@ -21,11 +23,12 @@ onMounted(async () => {
   <v-layout>
     <v-window v-model="uiState.currentTab" class="w-100 pb-12">
       <v-window-item value="private_tab" transition="none">
-        <WishList v-if="!uiState.selectedItem" :items="wishlistStore.privateItems"/>
-        <WishlistItemDetails v-else/>
+        <PrivateWishList v-if="!uiState.selectedItem" :items="wishlistStore.privateItems"/>
+        <PrivateWishlistItemDetails v-else/>
       </v-window-item>
       <v-window-item value="public_tab" transition="none">
-        <WishList :items="wishlistStore.publicItems"/>
+        <PublicWishList v-if="!uiState.selectedPublicItem" :items="wishlistStore.publicItems"/>
+        <PublicWishlistItemDetails v-else/>
       </v-window-item>
       <v-window-item value="search_tab" transition="none">
         <v-container>

@@ -11,6 +11,7 @@ export const PROFILE_TAB = "profile_tab"
 export const useUiStateStore = defineStore('uiState', () => {
   const currentTab = ref(PRIVATE_TAB)
   const selectedItem = ref(undefined)
+  const selectedPublicItem = ref(undefined)
 
   function setCurrentTab(value) {
     // TODO: validate
@@ -21,8 +22,12 @@ export const useUiStateStore = defineStore('uiState', () => {
     selectedItem.value = value
   }
 
+  function setSelectedPublicItem(value) {
+    selectedPublicItem.value = value
+  }
+
   return {
-    currentTab, selectedItem,
-    setCurrentTab, setSelectedItem
+    currentTab, selectedItem, selectedPublicItem,
+    setCurrentTab, setSelectedItem, setSelectedPublicItem
   }
 })

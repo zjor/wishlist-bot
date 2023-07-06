@@ -1,5 +1,5 @@
 <script setup>
-import WishListItem from "@/components/WishListItem.vue"
+import PrivateWishListItem from "@/components/PrivateWishListItem.vue"
 import {useUiStateStore} from "@/stores/uiStateStore";
 
 const props = defineProps({
@@ -16,7 +16,7 @@ function onItemClick(item) {
 
 <template>
   <div class="list">
-    <WishListItem
+    <PrivateWishListItem
         v-for="item in props.items"
         :key="item.id"
         @click="onItemClick(item)"
