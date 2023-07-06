@@ -79,6 +79,19 @@ const Client = (telegramId) => {
       })
       log.info('[getMyProfile] <= ', response.status, response.data)
       return response.data
+    },
+
+    loadMyStats: async () => {
+      log.info('[loadMyStats] => ')
+
+      const url = `${baseUrl}/api/user/me/stats`
+      const response = await axios.get(url, {
+        headers: getHeaders(telegramId),
+        validateStatus: false
+      })
+      log.info('[loadMyStats] <= ', response.status, response.data)
+      const {allItemsCount, publicCount, doneCount} = response.data
+      return {allItemsCount, publicCount, doneCount}
     }
 
   }

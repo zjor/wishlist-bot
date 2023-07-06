@@ -6,6 +6,7 @@ export const useWishlistStore = defineStore('wishlist', () => {
   const publicItems = ref([])
   const privateItems = ref([])
   const profile = ref({})
+  const profileStats = ref({})
 
   const privateItemDetails = ref({})
 
@@ -35,6 +36,11 @@ export const useWishlistStore = defineStore('wishlist', () => {
     profile.value = response
   }
 
+  async function loadProfileStats() {
+    const response = await api.loadMyStats()
+    profileStats.value = response
+  }
+
 
   function setPublicItems(value) {
     publicItems.value = value || []
@@ -45,8 +51,8 @@ export const useWishlistStore = defineStore('wishlist', () => {
   }
 
   return {
-    publicItems, privateItems, privateItemDetails, profile,
+    publicItems, privateItems, privateItemDetails, profile, profileStats,
     setPublicItems, setPrivateItems,
-    loadAllItems, setIsPublicAndUpdate, loadPrivateItemDetails, loadProfile
+    loadAllItems, setIsPublicAndUpdate, loadPrivateItemDetails, loadProfile, loadProfileStats
   }
 })

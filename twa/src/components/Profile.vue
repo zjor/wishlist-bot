@@ -7,6 +7,7 @@ const coverIds = [11, 12, 14, 17, 18, 20, 23, 24, 25, 26, 29]
 const coverId = Math.floor(Math.random() * coverIds.length)
 
 const {firstName, lastName, username, imageUrl} = store.profile
+const {allItemsCount, publicCount, doneCount} = store.profileStats
 
 let name = firstName
 if (lastName && lastName.length > 0) {
@@ -34,7 +35,7 @@ if (lastName && lastName.length > 0) {
 
     <div class="flex-row pt-10">
       <div class="flex-col flex-center stats">
-        <div class="number">45</div>
+        <div class="number">{{allItemsCount}}</div>
         <v-icon>mdi-format-list-checks</v-icon>
         <div>
           Total
@@ -42,7 +43,7 @@ if (lastName && lastName.length > 0) {
       </div>
 
       <div class="flex-col flex-center stats">
-        <div class="number">23</div>
+        <div class="number">{{publicCount}}</div>
         <v-icon>mdi-earth</v-icon>
         <div>
           Public
@@ -50,7 +51,7 @@ if (lastName && lastName.length > 0) {
       </div>
 
       <div class="flex-col flex-center stats">
-        <div class="number">5</div>
+        <div class="number">{{doneCount}}</div>
         <v-icon>mdi-check</v-icon>
         <div>
           Completed

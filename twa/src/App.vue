@@ -17,6 +17,7 @@ onMounted(async () => {
   logConfig()
   await wishlistStore.loadAllItems()
   await wishlistStore.loadProfile()
+  await wishlistStore.loadProfileStats()
 })
 
 </script>
