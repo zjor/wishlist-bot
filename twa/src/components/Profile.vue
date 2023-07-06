@@ -24,24 +24,24 @@ const avatarUrl = `https://robohash.org/${coverId}`
     <div class="flex-row pt-10">
       <div class="flex-col flex-center stats">
         <div class="number">45</div>
+        <v-icon>mdi-format-list-checks</v-icon>
         <div>
-          <v-icon>mdi-format-list-checks</v-icon>
-          All items
+          Total
         </div>
       </div>
 
       <div class="flex-col flex-center stats">
         <div class="number">23</div>
+        <v-icon>mdi-earth</v-icon>
         <div>
-          <v-icon>mdi-earth</v-icon>
-          Public items
+          Public
         </div>
       </div>
 
       <div class="flex-col flex-center stats">
         <div class="number">5</div>
+        <v-icon>mdi-check</v-icon>
         <div>
-          <v-icon>mdi-check</v-icon>
           Completed
         </div>
       </div>

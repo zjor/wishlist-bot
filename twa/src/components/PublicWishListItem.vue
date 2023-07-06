@@ -76,7 +76,7 @@ onMounted(() => {
 }
 
 .details {
-  padding-right: 1em;
+  padding-right: 0.5em;
 }
 
 .name {
@@ -103,15 +103,8 @@ onMounted(() => {
   border-radius: 4px;
 }
 
-.icon {
-  width: 24px;
-  height: 24px;
-  padding: 2px;
-  color: var(--vt-c-black-mute);
-}
-
 .preview {
-  padding: 1em;
+  padding: 0.5em;
 }
 
 .preview img {
@@ -120,12 +113,16 @@ onMounted(() => {
 }
 
 .avatar {
-  min-width: 72px;
+  min-width: 64px;
 }
 
 .avatar img {
-  max-width: 64px;
+  max-width: 48px;
   border-radius: 50%;
+}
+
+.avatar div {
+  font-size: 0.8em;
 }
 
 </style>

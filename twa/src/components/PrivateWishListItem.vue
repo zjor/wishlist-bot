@@ -96,7 +96,7 @@ onMounted(() => {
 }
 
 .preview {
-  padding: 1em;
+  padding: 0.5em;
 }
 
 .preview img {
