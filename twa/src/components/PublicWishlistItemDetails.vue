@@ -3,11 +3,14 @@ import {ref} from "vue"
 import {DEFAULT_IMAGE_URL, useUiStateStore} from "@/stores/uiStateStore"
 
 const uiState = useUiStateStore()
-const defaultImageUrl = ref(DEFAULT_IMAGE_URL)
 const item = uiState.selectedPublicItem
 
 function onBackClick() {
   uiState.setSelectedPublicItem(undefined)
+}
+
+function openUrl() {
+  window.open(item.url, "_blank")
 }
 
 </script>
@@ -25,19 +28,36 @@ function onBackClick() {
     </v-app-bar>
     <v-main>
       <v-container>
-        <div class="preview flex-row flex-center">
-          <img
-              :src="item?.imageUrl || defaultImageUrl"
-              alt="preview">
-        </div>
-        <div class="pt-4 pb-4">
-          {{ item?.description }}
+        <div class="flex-row pb-4">
+          <div class="preview flex-row flex-center">
+            <img
+                :src="item?.imageUrl || DEFAULT_IMAGE_URL"
+                alt="preview">
+          </div>
+          <div class="flex-col ml-4 flex-grow-1">
+            <div class="flex-grow-1">
+              {{ item?.description }}
+            </div>
+            <div class="flex-row">
+              <v-spacer/>
+              <v-btn
+                  append-icon="mdi-open-in-new"
+                  variant="elevated"
+                  color="secondary"
+                  @click="openUrl">Visit</v-btn>
+            </div>
+          </div>
         </div>
 
         <div class="tags flex-row">
           <div class="tag" v-for="tag in item?.tags" :key="tag">
             #{{ tag }}
           </div>
+        </div>
+
+        <div class="avatar pt-4 flex-row align-center">
+          <img :src="item?.owner?.imageUrl || `https://robohash.org/${item?.id}`"/>
+          <div class="pl-4">{{item?.owner?.firstName}}</div>
         </div>
 
       </v-container>
@@ -64,6 +84,15 @@ function onBackClick() {
   padding: 1px 4px;
   background-color: wheat;
   border-radius: 4px;
+}
+
+.avatar {
+
+}
+
+.avatar img {
+  width: 64px;
+  border-radius: 50%;
 }
 
 </style>

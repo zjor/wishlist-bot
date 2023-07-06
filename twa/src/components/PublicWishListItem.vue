@@ -52,7 +52,7 @@ onMounted(() => {
     </div>
     <div class="flex-col flex-center avatar">
       <img
-          :src="owner.imageUrl || DEFAULT_IMAGE_URL"/>
+          :src="owner.imageUrl || `https://robohash.org/${owner?.username}`"/>
       <div>{{ userTitle }}</div>
     </div>
   </div>

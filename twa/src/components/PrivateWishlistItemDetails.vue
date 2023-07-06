@@ -7,8 +7,7 @@ import log from "@/lib/logging";
 
 const wishlistStore = useWishlistStore()
 const uiState = useUiStateStore()
-const itemId = uiState.selectedItem.id
-const defaultImageUrl = ref(DEFAULT_IMAGE_URL)
+const item = uiState.selectedItem
 const isPublic = ref(uiState.selectedItem.public)
 const isPublicLoading = ref(false)
 
@@ -21,7 +20,6 @@ function onBackClick() {
 
 async function onPrivateToggle() {
   isPublicLoading.value = true
-  const item = uiState.selectedItem
   const response = await wishlistStore.setIsPublicAndUpdate(item.id, !item.public)
   uiState.setSelectedItem(response)
   isPublic.value = response.public
@@ -38,14 +36,18 @@ function refresh() {
 }
 
 async function setItemStatus(status) {
-  details.value = await api.setStatus(itemId, status)
+  details.value = await api.setStatus(item.id, status)
   refresh()
 }
 
+function openUrl() {
+  window.open(item.url, "_blank")
+}
+
 onMounted(async () => {
-  log.info(`${itemId} is mounted`)
-  details.value = wishlistStore.privateItemDetails[itemId] || {}
-  details.value = await wishlistStore.loadPrivateItemDetails(itemId)
+  log.info(`${item.id} is mounted`)
+  details.value = wishlistStore.privateItemDetails[item.id] || {}
+  details.value = await wishlistStore.loadPrivateItemDetails(item.id)
   refresh()
 })
 
@@ -59,22 +61,34 @@ onMounted(async () => {
           <v-icon>mdi-keyboard-backspace</v-icon>
         </v-app-bar-nav-icon>
       </template>
-      <v-alert-title class="text-truncate">{{ uiState.selectedItem?.name }}</v-alert-title>
+      <v-alert-title class="text-truncate">{{ item?.name }}</v-alert-title>
       <v-spacer/>
     </v-app-bar>
     <v-main>
       <v-container>
-        <div class="preview flex-row flex-center">
-          <img
-              :src="uiState.selectedItem?.imageUrl || defaultImageUrl"
-              alt="preview">
-        </div>
-        <div class="pt-4 pb-4">
-          {{ uiState.selectedItem?.description }}
+        <div class="flex-row pb-4">
+          <div class="preview flex-row flex-center">
+            <img
+                :src="item?.imageUrl || DEFAULT_IMAGE_URL"
+                alt="preview">
+          </div>
+          <div class="flex-col ml-4 flex-grow-1">
+            <div class="flex-grow-1">
+              {{ item?.description }}
+            </div>
+            <div class="flex-row">
+              <v-spacer/>
+              <v-btn
+                  append-icon="mdi-open-in-new"
+                  variant="elevated"
+                  color="secondary"
+                  @click="openUrl">Visit</v-btn>
+            </div>
+          </div>
         </div>
 
         <div class="tags flex-row">
-          <div class="tag" v-for="tag in uiState.selectedItem?.tags" :key="tag">
+          <div class="tag" v-for="tag in item?.tags" :key="tag">
             #{{ tag }}
           </div>
         </div>
