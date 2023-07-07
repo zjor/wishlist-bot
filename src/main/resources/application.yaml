@@ -19,6 +19,7 @@ spring:
 telegram:
   botUsername:
   botToken:
+#  webAppUrl: https://8a6d-85-239-229-199.ngrok-free.app
   webAppUrl: https://wishlist-bot.vercel.app
 
 opengraph:

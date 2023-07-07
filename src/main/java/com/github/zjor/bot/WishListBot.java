@@ -54,6 +54,8 @@ public class WishListBot extends TelegramLongPollingBot {
             handleMessageUpdate(update.getMessage());
         } else if (update.hasCallbackQuery()) {
             handleCallbackQuery(update.getCallbackQuery());
+        } else {
+            log.info("Unsupported update: {}", update);
         }
     }
 
