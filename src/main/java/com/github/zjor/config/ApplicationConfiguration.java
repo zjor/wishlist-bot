@@ -8,6 +8,8 @@ import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemMetaRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import com.github.zjor.service.MetaResolverService;
+import com.github.zjor.service.UserSearchService;
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +53,11 @@ public class ApplicationConfiguration {
             OpenGraphClient openGraphClient,
             ApplicationEventPublisher eventPublisher) {
         return new MetaResolverService(openGraphClient, itemRepository, metaRepository, eventPublisher);
+    }
+
+    @Bean
+    public UserSearchService userSearchService(DSLContext dsl) {
+        return new UserSearchService(dsl);
     }
 
 }
