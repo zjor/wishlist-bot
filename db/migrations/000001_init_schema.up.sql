@@ -10,9 +10,6 @@ create table if not exists users (
             unique
 );
 
-alter table users
-    owner to wishlist_bot;
-
 create unique index if not exists users_pkey
     on users (id);
 
@@ -35,9 +32,6 @@ create table wishlist_items (
         constraint fk1k8x0w6f5l1hgwqbmglq38j8c
             references users
 );
-
-alter table wishlist_items
-    owner to wishlist_bot;
 
 create unique index if not exists wishlist_items_pkey
     on wishlist_items (id);

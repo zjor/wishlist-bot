@@ -24,6 +24,8 @@
         <lombok.version>1.18.26</lombok.version>
         <hibernate.jpamodelgen.version>6.2.2.Final</hibernate.jpamodelgen.version>
         <cloudinary.version>1.32.2</cloudinary.version>
+        <jooq.version>3.18.5</jooq.version>
+        <testcontainers.version>1.18.3</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -119,6 +121,39 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jooq</groupId>
+            <artifactId>jooq</artifactId>
+            <version>${jooq.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
@@ -154,6 +189,134 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
+            <!-- Run Postgres in TestContainers-->
+            <plugin>
+                <groupId>org.codehaus.gmaven</groupId>
+                <artifactId>groovy-maven-plugin</artifactId>
+                <version>2.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>execute</goal>
+                        </goals>
+                        <configuration>
+                            <source>
+                                db = new org.testcontainers.containers.PostgreSQLContainer("postgres:15-alpine")
+                                        .withUsername("test")
+                                        .withDatabaseName("test")
+                                        .withPassword("s3cr3t")
+                                db.start()
+                                project.properties.setProperty('tc.db.url', db.getJdbcUrl())
+                                project.properties.setProperty('tc.db.username', db.getUsername())
+                                project.properties.setProperty('tc.db.password', db.getPassword())
+                                project.properties.setProperty('tc.db.migration.url', "postgresql://" + db.getUsername() + ":" + db.getPassword() + "@" +
+                                        db.getHost() + ":" + db.getMappedPort(org.testcontainers.containers.PostgreSQLContainer.POSTGRESQL_PORT) + "/" +
+                                        db.getDatabaseName() + "?sslmode=disable")
+                            </source>
+                        </configuration>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.testcontainers</groupId>
+                        <artifactId>postgresql</artifactId>
+                        <version>${testcontainers.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <!-- Run migrations against the DB in TestContainers -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <executable>bash</executable>
+                    <environmentVariables>
+                        <TC_MIGRATE_DATABASE_URL>${tc.db.migration.url}</TC_MIGRATE_DATABASE_URL>
+                        <MIGRATIONS_DIR>db/migrations</MIGRATIONS_DIR>
+                    </environmentVariables>
+                    <commandlineArgs>
+                        -c "set -x; migrate -database ${TC_MIGRATE_DATABASE_URL} -path ${MIGRATIONS_DIR} up"
+                    </commandlineArgs>
+                </configuration>
+            </plugin>
+
+            <!-- JOOQ code generation -->
+            <plugin>
+                <groupId>org.jooq</groupId>
+                <artifactId>jooq-codegen-maven</artifactId>
+                <version>${jooq.version}</version>
+
+                <executions>
+                    <execution>
+                        <id>jooq-codegen</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-meta</artifactId>
+                        <version>${jooq.version}</version>
+                    </dependency>
+
+                    <dependency>
+                        <groupId>org.jooq</groupId>
+                        <artifactId>jooq-meta-extensions</artifactId>
+                        <version>${jooq.version}</version>
+                    </dependency>
+
+                </dependencies>
+
+                <!-- see: https://www.jooq.org/doc/latest/manual/code-generation/codegen-ddl/ -->
+                <configuration>
+
+                    <jdbc>
+                        <url>${tc.db.url}</url>
+                        <user>${tc.db.username}</user>
+                        <password>${tc.db.password}</password>
+                    </jdbc>
+
+                    <generator>
+                        <database>
+                            <name>org.jooq.meta.postgres.PostgresDatabase</name>
+                            <includes>.*</includes>
+                            <inputSchema>public</inputSchema>
+                            <dateAsTimestamp>true</dateAsTimestamp>
+
+                            <forcedTypes>
+                                <forcedType>
+                                    <includeTypes>(?i)timestamp( without time zone)?</includeTypes>
+                                    <userType>java.time.Instant</userType>
+                                    <converter>com.github.zjor.ext.jooq.InstantBinding</converter>
+                                </forcedType>
+                            </forcedTypes>
+                        </database>
+
+                        <generate/>
+
+                        <target>
+                            <packageName>com.github.zjor.domain.jooq</packageName>
+                            <directory>target/generated-sources/jooq</directory>
+                        </target>
+                    </generator>
+                </configuration>
+            </plugin>
+
         </plugins>
     </build>
 </project>
