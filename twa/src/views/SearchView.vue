@@ -21,8 +21,10 @@ function onClick() {
 <template>
 <v-container>
   <div>Search feature will be here</div>
-  <v-btn @click="onClick">Send data</v-btn>
-  <div>{{output}}</div>
+  <div style="visibility: hidden">
+    <v-btn @click="onClick">Send data</v-btn>
+    <div>{{ output }}</div>
+  </div>
 </v-container>
 </template>
 

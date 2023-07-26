@@ -3,7 +3,6 @@ import {onMounted, ref} from "vue";
 import {DEFAULT_IMAGE_URL} from "@/stores/uiStateStore";
 import TonLogo from '@/assets/ton_token.png'
 
-
 const props = defineProps({
   name: String,
   description: String,
@@ -23,7 +22,7 @@ onMounted(() => {
 
   let _username = ''
   if (firstName) {
-    _username = firstName
+    _username = firstName.split(' ')[0]
   }
   if (lastName) {
     _username += ` ${lastName.slice(0, 1).toUpperCase()}.`
