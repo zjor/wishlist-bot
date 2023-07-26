@@ -26,6 +26,7 @@ function onItemClick(item) {
         :image-url="item.imageUrl"
         :url="item.url"
         :owner="item.owner"
+        :price="item.price"
     />
   </div>
   <div v-if="!props.items.length" class="no-items">

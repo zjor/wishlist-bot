@@ -1,6 +1,8 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {DEFAULT_IMAGE_URL} from "@/stores/uiStateStore";
+import TonLogo from '@/assets/ton_token.png'
+
 
 const props = defineProps({
   name: String,
@@ -8,7 +10,8 @@ const props = defineProps({
   tags: Array[String],
   imageUrl: String,
   url: String,
-  owner: Object
+  owner: Object,
+  price: Number
 })
 
 const tags = ref([])
@@ -36,10 +39,16 @@ onMounted(() => {
 
 <template>
   <div class="item flex-row flex-grow-1">
-    <div class="preview">
-      <img
-          :src="props.imageUrl || DEFAULT_IMAGE_URL"
-          alt="preview">
+    <div class="flex flex-column">
+      <div class="preview">
+        <img
+            :src="props.imageUrl || DEFAULT_IMAGE_URL"
+            alt="preview">
+      </div>
+      <div class="flex flex-row flex-center justify-start">
+        <div class="font-weight-bold">{{ price }}</div>
+        <img class="ton-logo" :src="TonLogo">
+      </div>
     </div>
     <div class="details flex-col flex-grow-1">
       <div class="name">{{ props.name }}</div>
@@ -123,6 +132,12 @@ onMounted(() => {
 
 .avatar div {
   font-size: 0.8em;
+}
+
+.ton-logo {
+  width: 1.5em;
+  height: 1.5em;
+  margin-left: 0.2em;
 }
 
 </style>
