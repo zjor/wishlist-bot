@@ -9,6 +9,9 @@ import lombok.Getter;
 import org.springframework.context.ApplicationEventPublisher;
 import org.telegram.telegrambots.bots.DefaultAbsSender;
 
+import java.math.BigDecimal;
+import java.util.Random;
+
 enum State {
     STARTED,
     PENDING_NAME,
@@ -65,6 +68,13 @@ public class CreateWishlistItemCommand extends BotCommand {
     public void text(String text) {
         transition(new TextAction(text));
         if (state == State.DONE) {
+
+            //TODO: remove hard-code
+            var random = new Random(System.currentTimeMillis());
+            getContext()
+                    .price(BigDecimal.valueOf(random.nextLong(7, 150)))
+                    .currency("TON");
+
             var item = wishlistItemRepository.save(getContext().owner(user).build());
             eventPublisher.publishEvent(new WishlistItemCreatedEvent(user.getId(), item.getId()));
         }
