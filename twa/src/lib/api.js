@@ -92,6 +92,18 @@ const Client = (telegramId) => {
       log.info('[loadMyStats] <= ', response.status, response.data)
       const {allItemsCount, publicCount, doneCount} = response.data
       return {allItemsCount, publicCount, doneCount}
+    },
+
+    searchUser: async (query) => {
+      log.info('[searchUser] => ')
+
+      const url = `${baseUrl}/api/user/search?q=${encodeURIComponent(query)}`
+      const response = await axios.get(url, {
+        headers: getHeaders(telegramId),
+        validateStatus: false
+      })
+      log.info('[searchUser] <= ', response.status, response.data)
+      return response.data
     }
 
   }
