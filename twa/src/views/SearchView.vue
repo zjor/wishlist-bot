@@ -5,9 +5,20 @@ import api from "@/lib/api"
 const searchInput = ref('')
 const searchLoading = ref(false)
 const searchResults = ref([])
+const selectedUser = ref(undefined)
 
-watch(searchInput, async (value, old) => {
-  console.log(`${old} -> ${value}`)
+function onSearchSelected(item) {
+  const {username, firstName, lastName, imageUrl} = item
+  selectedUser.value = {username, firstName, lastName, imageUrl}
+}
+
+function clearSearchSelection() {
+  selectedUser.value = undefined
+  searchResults.value = []
+  searchInput.value = ''
+}
+
+watch(searchInput, async () => {
   if (!searchLoading.value && searchInput.value.length > 1) {
     searchLoading.value = true
     searchResults.value = await api.searchUser(searchInput.value)
@@ -26,26 +37,39 @@ watch(searchInput, async (value, old) => {
 <template>
 <div>
   <div class="search">
-    <v-text-field
+    <div v-if="selectedUser" class="flex flex-row align-center pa-2 bg-secondary">
+      <div class="avatar ml-2">
+        <img :src="selectedUser.imageUrl || `https://robohash.org/${selectedUser.username}`">
+      </div>
+      <div class="flex flex-column ml-2">
+        <div class="font-weight-bold">{{selectedUser.firstName}} {{selectedUser.lastName}}</div>
+        <div v-if="selectedUser.username" class="text-subtitle-2">@{{selectedUser.username}}</div>
+      </div>
+      <v-spacer/>
+      <v-btn icon="mdi-close" @click="clearSearchSelection"></v-btn>
+    </div>
+    <v-text-field v-else
         v-model="searchInput"
         :loading="searchLoading">
     </v-text-field>
 
-    <div v-if="searchResults.length > 0">
-      <div v-for="(user, i) in searchResults" :key="user.username">
-        <div class="flex flex-row">
-          <div class="avatar ml-2">
-            <img :src="user.imageUrl || `https://robohash.org/${user.username}`">
+    <div v-if="!selectedUser">
+      <div v-if="searchResults.length > 0">
+        <div v-for="(user, i) in searchResults" :key="user.username" @click="() => onSearchSelected(user)">
+          <div class="flex flex-row">
+            <div class="avatar ml-2">
+              <img :src="user.imageUrl || `https://robohash.org/${user.username}`">
+            </div>
+            <div class="flex flex-column ml-2">
+              <div class="font-weight-bold">{{user.firstName}} {{user.lastName}}</div>
+              <div v-if="user.username" class="text-subtitle-2">@{{user.username}}</div>
+            </div>
           </div>
-          <div class="flex flex-column ml-2">
-            <div class="font-weight-bold">{{user.firstName}} {{user.lastName}}</div>
-            <div v-if="user.username" class="text-subtitle-2">@{{user.username}}</div>
-          </div>
+          <v-divider v-if="i != (searchResults.length - 1)" class="ml-4 mr-4 mt-2 mb-2"/>
         </div>
-        <v-divider v-if="i != (searchResults.length - 1)" class="ml-4 mr-4 mt-2 mb-2"/>
       </div>
+      <div v-else class="flex flex-column flex-center">No results</div>
     </div>
-    <div v-else class="flex flex-column flex-center">No results</div>
 
   </div>
   <div>
