@@ -14,6 +14,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class JUser {
 
+    @JsonProperty("extId")
+    private String extId;
+
     @JsonProperty("username")
     private String username;
 
@@ -29,6 +32,7 @@ public class JUser {
     public static class Converter {
         public static JUser build(User user) {
             return JUser.builder()
+                    .extId(user.getExtId())
                     .username(user.getUsername())
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
@@ -38,6 +42,7 @@ public class JUser {
 
         public static JUser build(UsersRecord r) {
             return JUser.builder()
+                    .extId(r.getExtId())
                     .username(r.getUsername())
                     .firstName(r.getFirstName())
                     .lastName(r.getLastName())

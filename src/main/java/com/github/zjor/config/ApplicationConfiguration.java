@@ -7,6 +7,7 @@ import com.github.zjor.job.ExtractMetaTagsJob;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemMetaRepository;
 import com.github.zjor.repository.WishlistItemRepository;
+import com.github.zjor.repository.jooq.WishlistItemJooqRepo;
 import com.github.zjor.service.MetaResolverService;
 import com.github.zjor.service.UserSearchService;
 import org.jooq.DSLContext;
@@ -53,6 +54,11 @@ public class ApplicationConfiguration {
             OpenGraphClient openGraphClient,
             ApplicationEventPublisher eventPublisher) {
         return new MetaResolverService(openGraphClient, itemRepository, metaRepository, eventPublisher);
+    }
+
+    @Bean
+    public WishlistItemJooqRepo wishlistItemJooqRepo(DSLContext dsl) {
+        return new WishlistItemJooqRepo(dsl);
     }
 
     @Bean

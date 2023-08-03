@@ -12,6 +12,7 @@ import java.util.Optional;
 @Transactional
 public interface WishlistItemMetaRepository extends CrudRepository<WishlistItemMeta, String> {
 
+    // TODO: replace with JOOQ and lateral join
     Optional<WishlistItemMeta> findFirstByItemOrderByCreatedAtDesc(WishlistItem item);
 
 }
