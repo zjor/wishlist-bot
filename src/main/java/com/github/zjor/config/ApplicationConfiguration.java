@@ -9,6 +9,7 @@ import com.github.zjor.repository.WishlistItemMetaRepository;
 import com.github.zjor.repository.WishlistItemRepository;
 import com.github.zjor.repository.jooq.WishlistItemJooqRepo;
 import com.github.zjor.service.MetaResolverService;
+import com.github.zjor.service.ReferralUrlService;
 import com.github.zjor.service.UserSearchService;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +26,9 @@ public class ApplicationConfiguration {
             UserRepository userRepository,
             WishlistItemRepository wishlistItemRepository,
             @Value("${telegram.webAppUrl}") String webAppUrl,
+            ReferralUrlService referralUrlService,
             ApplicationEventPublisher eventPublisher) {
-        return new WishListBot(token, userRepository, wishlistItemRepository, webAppUrl, eventPublisher);
+        return new WishListBot(token, userRepository, wishlistItemRepository, webAppUrl, referralUrlService, eventPublisher);
     }
 
     @Bean
@@ -64,6 +66,12 @@ public class ApplicationConfiguration {
     @Bean
     public UserSearchService userSearchService(DSLContext dsl) {
         return new UserSearchService(dsl);
+    }
+
+    @Bean
+    public ReferralUrlService referralUrlService(
+            @Value("${referral.amazon}") String amazonStoreId) {
+        return new ReferralUrlService(amazonStoreId);
     }
 
 }

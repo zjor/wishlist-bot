@@ -4,6 +4,7 @@ import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
 import com.github.zjor.events.WishlistItemCreatedEvent;
 import com.github.zjor.repository.WishlistItemRepository;
+import com.github.zjor.service.ReferralUrlService;
 import com.github.zjor.util.ListUtils;
 import lombok.Getter;
 import org.springframework.context.ApplicationEventPublisher;
@@ -38,17 +39,20 @@ public class CreateWishlistItemCommand extends BotCommand {
     private final User user;
     private final WishlistItemRepository wishlistItemRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final ReferralUrlService referralUrlService;
 
     public CreateWishlistItemCommand(
             DefaultAbsSender sender,
             Long chatId,
             User user,
             WishlistItemRepository wishlistItemRepository,
-            ApplicationEventPublisher eventPublisher) {
+            ApplicationEventPublisher eventPublisher,
+            ReferralUrlService referralUrlService) {
         super(sender, chatId);
         this.user = user;
         this.wishlistItemRepository = wishlistItemRepository;
         this.eventPublisher = eventPublisher;
+        this.referralUrlService = referralUrlService;
     }
 
     private State state = State.STARTED;
@@ -110,7 +114,7 @@ public class CreateWishlistItemCommand extends BotCommand {
                         replyText = "Enter the URL of your wishlist item";
                     }
                     case PENDING_URL -> {
-                        context.url(text);
+                        context.url(referralUrlService.getReferralUrl(text));
                         state = State.PENDING_TAGS;
                         replyText = "Enter tags separated by comma (,), e.g. `book, hobby`";
                     }

@@ -7,6 +7,7 @@ import com.github.zjor.bot.commands.ViewItemCommand;
 import com.github.zjor.events.BotStartedEvent;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
+import com.github.zjor.service.ReferralUrlService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,6 +27,7 @@ public class WishListBot extends TelegramLongPollingBot {
     private final UserRepository userRepository;
     private final WishlistItemRepository wishlistItemRepository;
     private final String webAppUrl;
+    private final ReferralUrlService referralUrlService;
 
     /**
      * telegram ID -> current user's command
@@ -39,11 +41,13 @@ public class WishListBot extends TelegramLongPollingBot {
             UserRepository userRepository,
             WishlistItemRepository wishlistItemRepository,
             String webAppUrl,
+            ReferralUrlService referralUrlService,
             ApplicationEventPublisher eventPublisher) {
         super(botToken);
         this.userRepository = userRepository;
         this.wishlistItemRepository = wishlistItemRepository;
         this.webAppUrl = webAppUrl;
+        this.referralUrlService = referralUrlService;
         this.eventPublisher = eventPublisher;
     }
 
@@ -80,7 +84,7 @@ public class WishListBot extends TelegramLongPollingBot {
         } else if (text.startsWith("/create")) {
             currentCommands.put(
                     userId,
-                    new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository, eventPublisher)
+                    new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository, eventPublisher, referralUrlService)
                             .start());
         } else if (text.startsWith("/cancel")) {
             if (command != null) {

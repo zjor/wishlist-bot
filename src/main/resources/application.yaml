@@ -27,3 +27,6 @@ opengraph:
 
 cloudinary:
   url:
+
+referral:
+  amazon: qrshare05-20
