@@ -14,7 +14,7 @@ public class ReferralUrlService {
             Pattern.compile("gp\\/([A-Za-z0-9]{10})"),
             Pattern.compile("product\\/([A-Za-z0-9]{10})"));
 
-    private static final String AMAZON_REFERRAL_URL_TEMPLATE = "http://www.amazon.com/dp/%s/ref=nosim?tag=%s";
+    private static final String AMAZON_REFERRAL_URL_TEMPLATE = "https://www.amazon.com/dp/%s/ref=nosim?tag=%s";
 
     private final String amazonStoreId;
 
