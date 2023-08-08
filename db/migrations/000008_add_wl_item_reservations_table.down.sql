@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS wl_item_reservations;
