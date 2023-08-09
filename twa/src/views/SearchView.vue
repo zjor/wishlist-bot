@@ -1,19 +1,22 @@
 <script setup>
 import {ref, watch} from "vue"
 import api from "@/lib/api"
+import SearchedItemsList from "@/components/search/SearchedItemsList.vue"
+import { useUserSearchStore } from "@/stores/userSearchStore"
+
+const searchStore = useUserSearchStore()
 
 const searchInput = ref('')
 const searchLoading = ref(false)
 const searchResults = ref([])
-const selectedUser = ref(undefined)
 
 function onSearchSelected(item) {
-  const {username, firstName, lastName, imageUrl} = item
-  selectedUser.value = {username, firstName, lastName, imageUrl}
+  const {extId, username, firstName, lastName, imageUrl} = item
+  searchStore.setUser({extId, username, firstName, lastName, imageUrl})
 }
 
 function clearSearchSelection() {
-  selectedUser.value = undefined
+  searchStore.setUser(undefined)
   searchResults.value = []
   searchInput.value = ''
 }
@@ -37,23 +40,26 @@ watch(searchInput, async () => {
 <template>
 <div>
   <div class="search">
-    <div v-if="selectedUser" class="flex flex-row align-center pa-2 bg-secondary">
-      <div class="avatar ml-2">
-        <img :src="selectedUser.imageUrl || `https://robohash.org/${selectedUser.username}`">
+    <div v-if="searchStore.user" class="flex flex-column">
+      <div class="flex flex-row align-center pa-2 bg-secondary">
+        <div class="avatar ml-2">
+          <img :src="searchStore.user.imageUrl || `https://robohash.org/${searchStore.user.username}`">
+        </div>
+        <div class="flex flex-column ml-2">
+          <div class="font-weight-bold">{{searchStore.user.firstName}} {{searchStore.user.lastName}}</div>
+          <div v-if="searchStore.user.username" class="text-subtitle-2">@{{searchStore.user.username}}</div>
+        </div>
+        <v-spacer/>
+        <v-btn icon="mdi-close" @click="clearSearchSelection"></v-btn>
       </div>
-      <div class="flex flex-column ml-2">
-        <div class="font-weight-bold">{{selectedUser.firstName}} {{selectedUser.lastName}}</div>
-        <div v-if="selectedUser.username" class="text-subtitle-2">@{{selectedUser.username}}</div>
-      </div>
-      <v-spacer/>
-      <v-btn icon="mdi-close" @click="clearSearchSelection"></v-btn>
+      <SearchedItemsList/>
     </div>
     <v-text-field v-else
         v-model="searchInput"
         :loading="searchLoading">
     </v-text-field>
 
-    <div v-if="!selectedUser">
+    <div v-if="!searchStore.user">
       <div v-if="searchResults.length > 0">
         <div v-for="(user, i) in searchResults" :key="user.username" @click="() => onSearchSelected(user)">
           <div class="flex flex-row">

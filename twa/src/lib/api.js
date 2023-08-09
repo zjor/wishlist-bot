@@ -11,10 +11,11 @@ const getHeaders = (telegramId = null) => ({
 const Client = (telegramId) => {
   return {
 
-    getPublicItems: async () => {
+    getPublicItems: async (telegramId = null) => {
       log.info('[getPublicItems] => ')
 
-      const url = `${baseUrl}/api/wishlist/public`
+      const suffix = telegramId ? `/${telegramId}` : ''
+      const url = `${baseUrl}/api/wishlist/public${suffix}`
       const response = await axios.get(url, {
         headers: getHeaders(),
         validateStatus: false
