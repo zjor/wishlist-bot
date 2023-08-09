@@ -53,6 +53,7 @@ public class PublicWishlistController {
         return result;
     }
 
+    // TODO: sometimes JOOQ does not get connection to DB causing this endpoint to stuck for 30 seconds and fail
     @Log
     @GetMapping("{extId}")
     public List<JPublicListWishlistItem> getUserPublicItems(@PathVariable("extId") String extId) {
