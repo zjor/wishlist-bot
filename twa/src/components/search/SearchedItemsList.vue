@@ -43,7 +43,7 @@ onMounted(async () => {
             @click="onItemClick(item)"
         />
         <div v-if="!searchStore.items.items.length" class="flex flex-column flex-center pt-10">
-          <span>No wishes yet, ask <a :href="`https://t.me/${searchStore.user.username}`">{{searchStore.user.firstName}}</a> to add some</span>
+          No wishes yet, ask <a :href="`https://t.me/${searchStore.user.username}`">{{searchStore.user.firstName}}</a> to add some and <br/>make them public!
         </div>
       </div>
     </div>
