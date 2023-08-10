@@ -20,7 +20,7 @@ export const useUserSearchStore = defineStore('userSearch', () => {
   }
 
   function setItems(loading = false, _items = []) {
-    items.value = { loading, _items }
+    items.value = { loading, items: _items }
   }
 
   return {

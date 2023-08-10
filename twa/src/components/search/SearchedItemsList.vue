@@ -3,6 +3,7 @@ import log from "@/lib/logging"
 import api from "@/lib/api"
 import { useUserSearchStore } from "@/stores/userSearchStore"
 import {onMounted} from "vue";
+import SearchedItem from "@/components/search/SearchedItem.vue";
 
 const searchStore = useUserSearchStore()
 
@@ -21,13 +22,21 @@ onMounted(async () => {
 
 <template>
   <div>
-    <v-progress-linear
-        :active="searchStore.items.loading"
-        :indeterminate="searchStore.items.loading"
-        absolute
-        bottom
-        color="deep-purple-accent-4"
-    ></v-progress-linear>
-    <div v-if="searchStore.items.loading">Loading...</div>
+    <div v-if="searchStore.items.loading" class="flex flex-column flex-center">Loading...</div>
+    <div v-else class="flex flex-column">
+      <SearchedItem
+          v-for="item in searchStore.items.items"
+          :key="item.id"
+          :name="item.name"
+          :description="item.description"
+          :tags="item.tags"
+          :image-url="item.imageUrl"
+          :url="item.url"
+          :price="item.price"
+      />
+      <div v-if="!searchStore.items.items.length" class="flex flex-column flex-center pt-10">
+        <span>No wishes yet, ask <a :href="`https://t.me/${searchStore.user.username}`">{{searchStore.user.firstName}}</a> to add some</span>
+      </div>
+    </div>
   </div>
 </template>
