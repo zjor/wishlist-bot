@@ -8,8 +8,8 @@ const INITIAL_ITEMS_STATE = {
 
 export const useUserSearchStore = defineStore('userSearch', () => {
   const user = ref(undefined)
-
   const items = ref(INITIAL_ITEMS_STATE)
+  const selectedItem = ref(undefined)
 
   function setUser(value) {
     user.value = value
@@ -23,8 +23,12 @@ export const useUserSearchStore = defineStore('userSearch', () => {
     items.value = { loading, items: _items }
   }
 
+  function setSelectedItem(value) {
+    selectedItem.value = value
+  }
+
   return {
-    user, items,
-    setUser, setItems,
+    user, items, selectedItem,
+    setUser, setItems, setSelectedItem
   }
 })
