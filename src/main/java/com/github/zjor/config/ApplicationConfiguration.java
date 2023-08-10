@@ -12,10 +12,14 @@ import com.github.zjor.service.MetaResolverService;
 import com.github.zjor.service.ReferralUrlService;
 import com.github.zjor.service.UserSearchService;
 import org.jooq.DSLContext;
+import org.jooq.SQLDialect;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
 
 @Configuration
 public class ApplicationConfiguration {
@@ -56,6 +60,11 @@ public class ApplicationConfiguration {
             OpenGraphClient openGraphClient,
             ApplicationEventPublisher eventPublisher) {
         return new MetaResolverService(openGraphClient, itemRepository, metaRepository, eventPublisher);
+    }
+
+    @Bean
+    public DSLContext dslContext(DataSource dataSource) {
+        return DSL.using(dataSource, SQLDialect.POSTGRES);
     }
 
     @Bean

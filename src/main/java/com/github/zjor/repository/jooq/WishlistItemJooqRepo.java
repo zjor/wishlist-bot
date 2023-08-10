@@ -11,6 +11,7 @@ import static com.github.zjor.domain.jooq.tables.WishlistItems.WISHLIST_ITEMS;
 import static com.github.zjor.domain.jooq.tables.WishlistItemsMeta.WISHLIST_ITEMS_META;
 import static org.jooq.impl.DSL.and;
 
+//TODO: don't use JOOQ until issues with ConnectionPool are solved
 public class WishlistItemJooqRepo {
 
     private final DSLContext dsl;
