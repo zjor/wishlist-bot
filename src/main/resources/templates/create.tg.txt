@@ -1,0 +1,10 @@
+Great! 🔥 We are about to write down a new wish!
+You can always /cancel the process at any time.
+I'll need these three things from you:
+
+1. Name, e.g. 📖 "a book on productivity"
+2. Description, e.g. 📰 "how to be productive and achieve all your goals"
+3. A link to a product if any. E.g. 🛒 "https://best-shop.com/my-dreamed-item"
+4. A list of tags separated by comma, e.g. 🏷 "education, self-development"
+
+I'll guide you through the process step by step, let's start with the name:

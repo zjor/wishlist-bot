@@ -1,0 +1,12 @@
+Hello 🔥 *%s* 🔥,
+I'm `Djinny` 🪔, a wish list bot!
+
+- tell me your wishes, and I'll keep them for you
+- share them with everyone by making them public
+- find what other people want by searching their public wishes
+
+Go ahead and try to /create one and then /list.
+
+The most convenient way to interact with me is via WebApp, you'll find the button after running the /list command.
+
+So don't wait and /create your first wish, and maybe soon it will come true!

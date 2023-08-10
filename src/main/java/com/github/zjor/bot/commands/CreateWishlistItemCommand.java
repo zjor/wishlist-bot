@@ -1,5 +1,6 @@
 package com.github.zjor.bot.commands;
 
+import com.github.zjor.bot.Responses;
 import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
 import com.github.zjor.events.WishlistItemCreatedEvent;
@@ -94,11 +95,11 @@ public class CreateWishlistItemCommand extends BotCommand {
         switch (action) {
             case StartAction ignored -> {
                 state = State.PENDING_NAME;
-                replyText = "Enter a name of the item";
+                replyText = Responses.create();
             }
             case CancelAction ignored -> {
                 state = State.CANCELLED;
-                replyText = "Item creation was cancelled";
+                replyText = Responses.cancel();
             }
             case TextAction textAction -> {
                 var text = textAction.text.trim();

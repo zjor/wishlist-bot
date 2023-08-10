@@ -12,6 +12,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -122,15 +123,23 @@ public class WishListBot extends TelegramLongPollingBot {
         }
     }
 
-    @SneakyThrows
     private void reply(Message message, String text) {
-        execute(SendMessage.builder().chatId(message.getChatId()).text(text).build());
+        reply(message, text, false);
+    }
+
+    @SneakyThrows
+    private void reply(Message message, String text, boolean markdown) {
+        var builder = SendMessage.builder().chatId(message.getChatId()).text(text);
+        if (markdown) {
+            builder.parseMode(ParseMode.MARKDOWN);
+        }
+        execute(builder.build());
     }
 
     @SneakyThrows
     private void handleStart(Message message) {
         eventPublisher.publishEvent(BotStartedEvent.of(message.getChat()));
-        reply(message, String.format("Hello %s!\nWelcome to the WishListBot", message.getChat().getFirstName()));
+        reply(message, Responses.start(message.getChat().getFirstName()), true);
     }
 
 
