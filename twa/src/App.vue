@@ -34,6 +34,7 @@ onMounted(async () => {
     <v-window v-model="uiState.currentTab" class="w-100 pb-12">
       <v-window-item value="private_tab" transition="none">
         <v-btn
+            v-if="!uiState.selectedItem"
             id="add-item"
             color="primary"
             icon="mdi-plus"
