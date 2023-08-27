@@ -36,6 +36,9 @@ public class WishlistItem extends Born {
     @Column(name = "description", length = 4096)
     private String description;
 
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
     @Column(name = "image_url", length = 1024)
     private String imageUrl;
 

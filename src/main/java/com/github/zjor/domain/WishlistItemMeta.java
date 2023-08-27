@@ -30,6 +30,9 @@ public class WishlistItemMeta extends Born {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "thumbnail_url")
+    private String thumbnailUrl;
+
     @Column(name = "image_url")
     private String imageUrl;
 

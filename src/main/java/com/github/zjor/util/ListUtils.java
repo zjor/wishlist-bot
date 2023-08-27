@@ -14,4 +14,13 @@ public class ListUtils {
                 .map(s -> s.trim())
                 .collect(Collectors.toList());
     }
+
+    public static <T> T nvl(T... items) {
+        for (var item: items) {
+            if (item != null) {
+                return item;
+            }
+        }
+        return null;
+    }
 }

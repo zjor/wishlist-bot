@@ -32,5 +32,12 @@ public class ListUtilsTest {
         Assert.assertEquals(List.of(), items);
     }
 
+    @Test
+    public void shouldReturnNVL() {
+        Assert.assertEquals("alice", ListUtils.nvl(null, null, "alice", "bob"));
+        Assert.assertNull(ListUtils.nvl(null, null));
+        Assert.assertNull(ListUtils.nvl());
+        Assert.assertEquals("alice", ListUtils.nvl("alice"));
+    }
 
 }

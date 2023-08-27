@@ -3,8 +3,7 @@ package com.github.zjor.controller.dto;
 import com.github.zjor.domain.ItemStatus;
 import com.github.zjor.domain.WishlistItem;
 import com.github.zjor.domain.WishlistItemMeta;
-import com.github.zjor.domain.jooq.tables.records.WishlistItemsMetaRecord;
-import com.github.zjor.domain.jooq.tables.records.WishlistItemsRecord;
+import com.github.zjor.util.ListUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,12 +33,18 @@ public class JPublicListWishlistItem {
 
     public static class Converter {
         public static JPublicListWishlistItem build(WishlistItem item, Optional<WishlistItemMeta> meta) {
+            var imageUrl = ListUtils.nvl(
+                    item.getThumbnailUrl(),
+                    item.getImageUrl(),
+                    meta.map(WishlistItemMeta::getThumbnailUrl).orElse(null),
+                    meta.map(WishlistItemMeta::getImageUrl).orElse(null));
+
             var builder = JPublicListWishlistItem.builder()
                     .id(item.getId())
                     .owner(JUser.Converter.build(item.getOwner()))
                     .name(item.getName())
                     .description(item.getDescription())
-                    .imageUrl(item.getImageUrl())
+                    .imageUrl(imageUrl)
                     .url(item.getUrl())
                     .tags(item.getTags())
                     .status(item.getStatus())
@@ -47,24 +52,6 @@ public class JPublicListWishlistItem {
                     .currency(item.getCurrency())
                     .createdAt(item.getCreatedAt().toString());
 
-            meta.ifPresent(m -> builder.imageUrl(m.getImageUrl()));
-            return builder.build();
-        }
-
-        public static JPublicListWishlistItem build(WishlistItemsRecord item, Optional<WishlistItemsMetaRecord> meta) {
-            var builder = JPublicListWishlistItem.builder()
-                    .id(item.getId())
-                    .owner(null)
-                    .name(item.getName())
-                    .description(item.getDescription())
-                    .imageUrl(item.getImageUrl())
-                    .url(item.getUrl())
-                    .tags(List.of()) // TODO: impl
-                    .status(ItemStatus.valueOf(item.getStatus()))
-                    .price(item.getPrice())
-                    .currency(item.getCurrency())
-                    .createdAt(item.getCreatedAt().toString());
-            meta.ifPresent(m -> builder.imageUrl(m.getImageUrl()));
             return builder.build();
         }
     }

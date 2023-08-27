@@ -3,6 +3,7 @@ package com.github.zjor.controller.dto;
 import com.github.zjor.domain.ItemStatus;
 import com.github.zjor.domain.WishlistItem;
 import com.github.zjor.domain.WishlistItemMeta;
+import com.github.zjor.util.ListUtils;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,12 +34,18 @@ public class JPrivateListWishlistItem {
 
     public static class Converter {
         public static JPrivateListWishlistItem build(WishlistItem item, Optional<WishlistItemMeta> meta) {
+            var imageUrl = ListUtils.nvl(
+                    item.getThumbnailUrl(),
+                    item.getImageUrl(),
+                    meta.map(WishlistItemMeta::getThumbnailUrl).orElse(null),
+                    meta.map(WishlistItemMeta::getImageUrl).orElse(null));
+
             var builder = JPrivateListWishlistItem.builder()
                     .id(item.getId())
                     .ownerId(item.getOwner().getId())
                     .name(item.getName())
                     .description(item.getDescription())
-                    .imageUrl(item.getImageUrl())
+                    .imageUrl(imageUrl)
                     .url(item.getUrl())
                     .tags(item.getTags())
                     .isPublic(item.isPublic())
@@ -47,7 +54,6 @@ public class JPrivateListWishlistItem {
                     .currency(item.getCurrency())
                     .createdAt(item.getCreatedAt().toString());
 
-            meta.ifPresent(m -> builder.imageUrl(m.getImageUrl()));
             return builder.build();
         }
     }
