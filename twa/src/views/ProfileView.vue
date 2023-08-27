@@ -1,6 +1,5 @@
 <script setup>
 import {useWishlistStore} from "@/stores/wishlistStore"
-import TonLogo from '@/assets/ton_token.png'
 
 const store = useWishlistStore()
 
@@ -60,16 +59,6 @@ if (lastName && lastName.length > 0) {
       </div>
 
     </div>
-
-    <div class="mt-6">
-      <v-btn>
-        <template v-slot:prepend>
-          <img class="ton-logo" :src="TonLogo">
-        </template>
-        Connect TON Wallet
-      </v-btn>
-    </div>
-
   </div>
 
 </template>
@@ -111,11 +100,5 @@ if (lastName && lastName.length > 0) {
   font-size: 2em;
   font-weight: bold;
 }
-
-.ton-logo {
-  width: 1.5em;
-  height: 1.5em;
-}
-
 
 </style>

@@ -1,7 +1,6 @@
 <script setup>
 import {onMounted, ref} from "vue";
 import {DEFAULT_IMAGE_URL} from "@/stores/uiStateStore";
-import TonLogo from '@/assets/ton_token.png'
 
 const props = defineProps({
   name: String,
@@ -26,10 +25,6 @@ onMounted(() => {
         <img
             :src="props.imageUrl || DEFAULT_IMAGE_URL"
             alt="preview">
-      </div>
-      <div class="flex flex-row flex-center justify-start">
-        <div class="font-weight-bold">{{ price }}</div>
-        <img class="ton-logo" :src="TonLogo">
       </div>
     </div>
     <div class="details flex-col flex-grow-1">
@@ -104,12 +99,6 @@ onMounted(() => {
 .preview img {
   max-width: 64px;
   max-height: 64px;
-}
-
-.ton-logo {
-  width: 1.5em;
-  height: 1.5em;
-  margin-left: 0.2em;
 }
 
 </style>

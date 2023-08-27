@@ -1,6 +1,5 @@
 <script setup>
 import {DEFAULT_IMAGE_URL, useUiStateStore} from "@/stores/uiStateStore"
-import TonLogo from '@/assets/ton_token.png'
 
 const uiState = useUiStateStore()
 const item = uiState.selectedPublicItem
@@ -65,9 +64,7 @@ function openUrl() {
         <!-- Price section -->
         <div class="flex flex-row flex-center price-section">
           <div>Price:</div>
-
-          <img class="ton-logo ml-2" :src="TonLogo">
-          <div class="font-weight-bold pl-1">{{item?.price}}</div>
+          <div class="font-weight-bold pl-1">${{item?.price}}</div>
           <v-spacer/>
           <v-btn disabled>Donate</v-btn>
         </div>
@@ -113,10 +110,4 @@ function openUrl() {
   padding: 0.5em;
   border-radius: 0.5em;
 }
-
-.ton-logo {
-  width: 1.5em;
-  height: 1.5em;
-}
-
 </style>

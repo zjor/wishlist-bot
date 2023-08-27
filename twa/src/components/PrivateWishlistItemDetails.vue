@@ -4,7 +4,6 @@ import api from "@/lib/api"
 import {DEFAULT_IMAGE_URL, useUiStateStore} from "@/stores/uiStateStore"
 import {useWishlistStore} from "@/stores/wishlistStore"
 import log from "@/lib/logging";
-import TonLogo from '@/assets/ton_token.png'
 
 const wishlistStore = useWishlistStore()
 const uiState = useUiStateStore()
@@ -106,9 +105,7 @@ onMounted(async () => {
         <!-- Price section -->
         <div class="flex flex-row price-section">
           <div>Price:</div>
-
-          <img class="ton-logo ml-2" :src="TonLogo">
-          <div class="font-weight-bold pl-1">{{item?.price}}</div>
+          <div class="font-weight-bold pl-1">${{item?.price}}</div>
         </div>
 
         <v-divider/>
@@ -174,11 +171,6 @@ onMounted(async () => {
   color: white;
   padding: 0.5em;
   border-radius: 0.5em;
-}
-
-.ton-logo {
-  width: 1.5em;
-  height: 1.5em;
 }
 
 </style>

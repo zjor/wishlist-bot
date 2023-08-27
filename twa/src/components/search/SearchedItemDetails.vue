@@ -2,7 +2,6 @@
 import {ref, onMounted} from "vue"
 import {DEFAULT_IMAGE_URL} from "@/stores/uiStateStore"
 import { useUserSearchStore} from "@/stores/userSearchStore"
-import TonLogo from '@/assets/ton_token.png'
 
 const searchStore = useUserSearchStore()
 const item = ref(undefined)
@@ -64,9 +63,7 @@ onMounted(() => {
         <!-- Price section -->
         <div class="flex flex-row price-section mt-6">
           <div>Price:</div>
-
-          <img class="ton-logo ml-2" :src="TonLogo">
-          <div class="font-weight-bold pl-1">{{item?.price}}</div>
+          <div class="font-weight-bold pl-1">${{item?.price}}</div>
         </div>
 
       </v-container>
@@ -100,11 +97,6 @@ onMounted(() => {
   color: white;
   padding: 0.5em;
   border-radius: 0.5em;
-}
-
-.ton-logo {
-  width: 1.5em;
-  height: 1.5em;
 }
 
 </style>

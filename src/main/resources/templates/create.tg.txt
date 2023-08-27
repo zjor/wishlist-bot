@@ -7,4 +7,5 @@ I'll need these three things from you:
 3. A link to a product if any. E.g. 🛒 "https://best-shop.com/my-dreamed-item"
 4. A list of tags separated by comma, e.g. 🏷 "education, self-development"
 
-I'll guide you through the process step by step, let's start with the name:
+I'll guide you through the process step by step,
+let's start with the *name*:
