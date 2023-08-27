@@ -4,6 +4,7 @@ import com.github.zjor.bot.commands.BotCommand;
 import com.github.zjor.bot.commands.CreateWishlistItemCommand;
 import com.github.zjor.bot.commands.ListItemsCommand;
 import com.github.zjor.bot.commands.ViewItemCommand;
+import com.github.zjor.domain.User;
 import com.github.zjor.events.BotStartedEvent;
 import com.github.zjor.repository.UserRepository;
 import com.github.zjor.repository.WishlistItemRepository;
@@ -83,10 +84,7 @@ public class WishListBot extends TelegramLongPollingBot {
         if (text.startsWith("/start")) {
             handleStart(message);
         } else if (text.startsWith("/create")) {
-            currentCommands.put(
-                    userId,
-                    new CreateWishlistItemCommand(this, chatId, user, wishlistItemRepository, eventPublisher, referralUrlService)
-                            .start());
+            initItemCreation(user);
         } else if (text.startsWith("/cancel")) {
             if (command != null) {
                 command.cancel();
@@ -146,5 +144,12 @@ public class WishListBot extends TelegramLongPollingBot {
     @Override
     public String getBotUsername() {
         return "wishlistBot";
+    }
+
+    public void initItemCreation(User user) {
+        currentCommands.put(
+                user.getExtId(),
+                new CreateWishlistItemCommand(this, Long.valueOf(user.getExtId()), user, wishlistItemRepository, eventPublisher, referralUrlService)
+                        .start());
     }
 }

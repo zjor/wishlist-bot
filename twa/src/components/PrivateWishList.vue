@@ -35,10 +35,12 @@ function onItemClick(item) {
 </template>
 
 <style scoped>
+
 .list {
   display: flex;
   flex-direction: column;
 }
+
 .no-items {
   display: flex;
   flex-direction: column;

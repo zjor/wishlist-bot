@@ -105,6 +105,17 @@ const Client = (telegramId) => {
       })
       log.info('[searchUser] <= ', response.status, response.data)
       return response.data
+    },
+
+    initItemCreation: async () => {
+      log.info('[initItemCreation] => ')
+
+      const url = `${baseUrl}/api/wishlist/private/new`
+      const response = await axios.post(url, {},{
+        headers: getHeaders(telegramId),
+        validateStatus: false
+      })
+      log.info('[initItemCreation] <= ', response.status, response.data)
     }
 
   }

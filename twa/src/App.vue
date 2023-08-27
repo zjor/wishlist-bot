@@ -9,10 +9,16 @@ import PrivateWishlistItemDetails from "@/components/PrivateWishlistItemDetails.
 import PublicWishlistItemDetails from "@/components/PublicWishlistItemDetails.vue";
 import ProfileView from "@/views/ProfileView.vue";
 import SearchView from "@/views/SearchView.vue";
+import api from "@/lib/api";
 
 const wishlistStore = useWishlistStore()
 const uiState = useUiStateStore()
 const tab = ref(null)
+
+async function onNewItemClicked() {
+  window.Telegram?.WebApp?.close()
+  await api.initItemCreation()
+}
 
 onMounted(async () => {
   logConfig()
@@ -27,6 +33,12 @@ onMounted(async () => {
   <v-layout>
     <v-window v-model="uiState.currentTab" class="w-100 pb-12">
       <v-window-item value="private_tab" transition="none">
+        <v-btn
+            id="add-item"
+            color="primary"
+            icon="mdi-plus"
+            @click="onNewItemClicked">
+        </v-btn>
         <PrivateWishList v-if="!uiState.selectedItem" :items="wishlistStore.privateItems"/>
         <PrivateWishlistItemDetails v-else/>
       </v-window-item>
@@ -64,9 +76,17 @@ onMounted(async () => {
       </v-btn>
     </v-bottom-navigation>
   </v-layout>
-
 </template>
 
 <style scoped>
+#add-item {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin-right: 2em;
+  margin-bottom: 5em;
+  z-index: 1005;
+}
+
 
 </style>

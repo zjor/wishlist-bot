@@ -1,5 +1,6 @@
 package com.github.zjor.controller;
 
+import com.github.zjor.bot.WishListBot;
 import com.github.zjor.controller.dto.JPrivateListWishlistItem;
 import com.github.zjor.controller.dto.JPrivateWishlistItemDetails;
 import com.github.zjor.controller.dto.JSetIsPublicRequest;
@@ -7,6 +8,7 @@ import com.github.zjor.controller.dto.JSetStatusRequest;
 import com.github.zjor.domain.ItemStatus;
 import com.github.zjor.domain.User;
 import com.github.zjor.domain.WishlistItem;
+import com.github.zjor.ext.spring.aop.Log;
 import com.github.zjor.ext.spring.auth.AuthUser;
 import com.github.zjor.repository.WishlistItemMetaRepository;
 import com.github.zjor.repository.WishlistItemRepository;
@@ -37,12 +39,15 @@ public class PrivateWishlistController {
 
     private final WishlistItemRepository wishlistItemRepository;
     private final WishlistItemMetaRepository wishlistItemMetaRepository;
+    private final WishListBot wishListBot;
 
     public PrivateWishlistController(
             WishlistItemRepository wishlistItemRepository,
-            WishlistItemMetaRepository wishlistItemMetaRepository) {
+            WishlistItemMetaRepository wishlistItemMetaRepository,
+            WishListBot wishListBot) {
         this.wishlistItemRepository = wishlistItemRepository;
         this.wishlistItemMetaRepository = wishlistItemMetaRepository;
+        this.wishListBot = wishListBot;
     }
 
     @GetMapping
@@ -63,6 +68,12 @@ public class PrivateWishlistController {
         return result;
     }
 
+    @Log
+    @PostMapping("new")
+    public void startItemCreationFlow(@AuthUser User user) {
+        wishListBot.initItemCreation(user);
+    }
+
     @GetMapping("{id}")
     public JPrivateWishlistItemDetails get(@PathVariable("id") String id, @AuthUser User user) {
         var item = wishlistItemRepository.findById(id).orElseThrow(notFoundSupplier(id));
@@ -74,6 +85,7 @@ public class PrivateWishlistController {
                 wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item));
     }
 
+    @Log
     @PostMapping("{id}/status")
     public JPrivateWishlistItemDetails setStatus(@PathVariable("id") String id,
                                                 @RequestBody JSetStatusRequest req,
@@ -95,6 +107,7 @@ public class PrivateWishlistController {
                 wishlistItemMetaRepository.findFirstByItemOrderByCreatedAtDesc(item));
     }
 
+    @Log
     @PostMapping("{id}/is-public")
     public JPrivateWishlistItemDetails setIsPublic(@PathVariable("id") String id,
                                                   @RequestBody JSetIsPublicRequest req,
