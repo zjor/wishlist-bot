@@ -15,6 +15,8 @@ import static com.github.zjor.controller.XHttpHeaders.X_TELEGRAM_USER;
 @Configuration
 public class SwaggerConfiguration {
 
+    public static final String SECURITY_REQUIREMENT_BASIC = "basic";
+
     static {
         SpringDocUtils.getConfig().addAnnotationsToIgnore(AuthUser.class);
     }
@@ -28,8 +30,11 @@ public class SwaggerConfiguration {
                                         .in(SecurityScheme.In.HEADER)
                                         .type(SecurityScheme.Type.APIKEY)
                                         .name(X_TELEGRAM_USER)
-                                        .description("Telegram ID of an authenticated user")
-                        ))
+                                        .description("Telegram ID of an authenticated user"))
+                        .addSecuritySchemes(SECURITY_REQUIREMENT_BASIC,
+                                new SecurityScheme()
+                                        .type(SecurityScheme.Type.HTTP)
+                                        .scheme("basic")))
                 .info(new Info().title("Wishlist Bot API")
                         .description("Wishlist Telegram Bot")
                         .version("v0.0.1"))

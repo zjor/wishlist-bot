@@ -32,3 +32,8 @@ cloudinary:
 
 referral:
   amazon: qrshare05-20
+
+auth:
+  basic:
+    login: alice
+    password: s3cr3t

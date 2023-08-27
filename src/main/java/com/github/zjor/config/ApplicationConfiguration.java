@@ -2,6 +2,7 @@ package com.github.zjor.config;
 
 import com.github.zjor.bot.TelegramApiClient;
 import com.github.zjor.bot.WishListBot;
+import com.github.zjor.ext.spring.auth.BasicAuthFilter;
 import com.github.zjor.integrations.opengraph.OpenGraphClient;
 import com.github.zjor.job.ExtractMetaTagsJob;
 import com.github.zjor.repository.UserRepository;
@@ -15,6 +16,7 @@ import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,6 +25,18 @@ import javax.sql.DataSource;
 
 @Configuration
 public class ApplicationConfiguration {
+
+    @Bean
+    public FilterRegistrationBean<BasicAuthFilter> basicAuthFilterFilterRegistrationBean(
+            @Value("${auth.basic.login}") String login,
+            @Value("${auth.basic.password}") String password) {
+        FilterRegistrationBean<BasicAuthFilter> registrationBean = new FilterRegistrationBean<>();
+
+        registrationBean.setFilter(new BasicAuthFilter(login, password));
+        registrationBean.addUrlPatterns("/admin/api/*");
+        registrationBean.setOrder(1);
+        return registrationBean;
+    }
 
     @Bean
     public WishListBot wishListBot(
