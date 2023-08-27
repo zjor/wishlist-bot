@@ -17,4 +17,6 @@ kubectl create secret generic ${APP}-secrets \
   --from-literal=TELEGRAM_CREATORID=${TELEGRAM_CREATORID} \
   --from-literal=OPENGRAPH_APIKEY=${OPENGRAPH_APIKEY} \
   --from-literal=CLOUDINARY_URL=${CLOUDINARY_URL} \
+  --from-literal=AUTH_BASIC_LOGIN=${AUTH_BASIC_LOGIN} \
+  --from-literal=AUTH_BASIC_PASSWORD=${AUTH_BASIC_PASSWORD} \
   -n ${NAMESPACE}
