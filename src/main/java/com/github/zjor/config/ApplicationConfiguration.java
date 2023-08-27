@@ -2,6 +2,7 @@ package com.github.zjor.config;
 
 import com.github.zjor.bot.TelegramApiClient;
 import com.github.zjor.bot.WishListBot;
+import com.github.zjor.ext.spring.ContextRefreshedEventHandler;
 import com.github.zjor.ext.spring.auth.BasicAuthFilter;
 import com.github.zjor.integrations.opengraph.OpenGraphClient;
 import com.github.zjor.job.ExtractMetaTagsJob;
@@ -36,6 +37,11 @@ public class ApplicationConfiguration {
         registrationBean.addUrlPatterns("/admin/api/*");
         registrationBean.setOrder(1);
         return registrationBean;
+    }
+
+    @Bean
+    public ContextRefreshedEventHandler contextRefreshedEventHandler() {
+        return new ContextRefreshedEventHandler();
     }
 
     @Bean
