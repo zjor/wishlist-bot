@@ -20,6 +20,7 @@ def store_page_source(url: str, out_filename: str, headless: bool = True):
 
 if __name__ == "__main__":
     store_page_source(
-        url="https://www.amazon.com/dp/B0C947C9QS/",
-        out_filename="out.html"
+        url="https://www.amazon.com/dp/B07WZDKMHZ/ref=nosim?tag=qrshare05-20",
+        out_filename="out-4.html",
+        headless=True
     )
